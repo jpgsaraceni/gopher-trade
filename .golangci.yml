@@ -1,4 +1,9 @@
 linters-settings:
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(github.com/jpgsaraceni/gopher-trade)
   goimports:
     local-prefixes: github.com/jpgsaraceni/gopher-trade
   gofumpt:
