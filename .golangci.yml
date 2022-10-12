@@ -123,8 +123,6 @@ linters:
     - prealloc
     - predeclared
     - revive
-    - rowserrcheck
-    - sqlclosecheck
     - staticcheck
     - stylecheck
     - tagliatelle
@@ -132,5 +130,10 @@ linters:
     - typecheck
     - unconvert
     - unused
-    - wastedassign
     - whitespace
+  
+  # linters that don't yet support go 1.18
+  disable:
+    - rowserrcheck
+    - sqlclosecheck
+    - wastedassign
