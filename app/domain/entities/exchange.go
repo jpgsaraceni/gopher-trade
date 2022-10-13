@@ -39,3 +39,17 @@ func (e *Exchange) UpdateRate(r decimal.Decimal) {
 func (e Exchange) Convert(fromAmount decimal.Decimal) decimal.Decimal {
 	return e.rate.Mul(fromAmount)
 }
+
+// getters
+
+func (e Exchange) From() vos.CurrencyCode {
+	return e.from
+}
+
+func (e Exchange) To() vos.CurrencyCode {
+	return e.to
+}
+
+func (e Exchange) Rate() decimal.Decimal {
+	return e.rate
+}
