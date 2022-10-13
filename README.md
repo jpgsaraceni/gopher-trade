@@ -1,6 +1,6 @@
-# Gopher Exchange (WIP)
+# Gopher Trade (WIP)
 
-Gopher Exchange is a currency conversion API built in Go. References are scattered as links through this README. Hopefully when I'm finished I will create a References section at the end of this document.
+Gopher Trade is a currency conversion API built in Go. References are scattered as links through this README. Hopefully when I'm finished I will create a References section at the end of this document.
 
 ## Contents
 
@@ -32,7 +32,7 @@ coming soon...
 
 ## Testing
 
-This project did not aim to have 100% test coverage. Its development did not follow strict TDD doctrine, instead it [aimed to test behaviour](https://dave.cheney.net/paste/absolute-unit-test-london-gophers.pdf).
+This project does not aim to have 100% test coverage. Also, its development did not follow strict TDD doctrine, instead it [aimed to test behaviour](https://dave.cheney.net/paste/absolute-unit-test-london-gophers.pdf).
 
 ## Run locally
 
@@ -45,7 +45,7 @@ This project did not aim to have 100% test coverage. Its development did not fol
 The app is not runnable yet. You can execute all unit tests by running:
 
 ```bash
-go test ./...
+make test
 ```
 
 ## Aplication Dependencies
