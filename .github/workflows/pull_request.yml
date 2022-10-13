@@ -55,7 +55,7 @@ jobs:
         with:
           go-version: 1.18
       - run: |
-        make generate
-        git diff --exit-code --ignore-space-change
+          make generate
+          git diff --exit-code --ignore-space-change
 
 
