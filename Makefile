@@ -24,5 +24,7 @@ clean-generated:
 
 .PHONY: generate
 generate: clean-generated install-tools
+	@echo "Tidying go mod"
+	go mod tidy
 	@echo "Running go generate"
 	go generate ./...

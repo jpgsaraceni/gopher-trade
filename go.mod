@@ -3,13 +3,13 @@ module github.com/jpgsaraceni/gopher-trade
 go 1.18
 
 require (
+	github.com/go-chi/chi/v5 v5.0.7
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/ory/dockertest/v3 v3.9.1
 	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.8.0
-	github.com/go-chi/chi/v5 v5.0.7
 )
 
 require (
