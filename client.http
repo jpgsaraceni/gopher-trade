@@ -1,0 +1,9 @@
+# Exchanges
+POST http://localhost:3000/exchanges
+Content-Type: application/json
+
+{
+    "from": "USD",
+    "to": "BRL",
+    "rate":"1.1231"
+}
