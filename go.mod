@@ -9,6 +9,7 @@ require (
 	github.com/ory/dockertest/v3 v3.9.1
 	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.8.0
+	github.com/go-chi/chi/v5 v5.0.7
 )
 
 require (
