@@ -24,11 +24,11 @@ func Test_UseCase_Convert(t *testing.T) {
 				return exchange.UseCase{}
 			},
 			input: exchange.ConvertInput{
-				Exchange:   testExchange,
+				Exchange:   testExc01,
 				FromAmount: decimal.NewFromFloat(2.25),
 			},
 			want: exchange.ConvertOutput{
-				decimal.NewFromFloat(3.375),
+				decimal.NewFromFloat(2.777625),
 			},
 		},
 	}
