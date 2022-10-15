@@ -14,7 +14,7 @@ test:
 .PHONY: install-tools
 install-tools:
 	@echo "Installing development tools"
-	go install github.com/matryer/moq
+	go install github.com/matryer/moq@latest
 
 .PHONY: clean-generated
 clean-generated:

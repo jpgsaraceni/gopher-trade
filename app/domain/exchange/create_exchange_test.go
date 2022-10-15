@@ -34,13 +34,13 @@ func Test_UseCase_CreateExchange(t *testing.T) {
 				})
 			},
 			input: exchange.CreateExchangeInput{
-				From: testExchange.From(),
-				To:   testExchange.To(),
-				Rate: testExchange.Rate(),
+				From: testExc01.From,
+				To:   testExc01.To,
+				Rate: testExc01.Rate,
 			},
 			want: want{
 				output: exchange.CreateExchangeOutput{
-					Exc: testExchange,
+					Exc: testExc01,
 				},
 				err: nil,
 			},

@@ -10,46 +10,33 @@ import (
 )
 
 type Exchange struct {
-	id        string
-	from      vos.CurrencyCode
-	to        vos.CurrencyCode
-	createdAt time.Time
-	updatedAt time.Time
-	rate      decimal.Decimal
+	ID        string
+	From      vos.CurrencyCode
+	To        vos.CurrencyCode
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Rate      decimal.Decimal
 }
 
 // NewExchange generates an ID (UUID) and timestamps and returns an Exchange struct.
 func NewExchange(from, to vos.CurrencyCode, rate decimal.Decimal) Exchange {
 	return Exchange{
-		id:        uuid.NewString(),
-		from:      from,
-		to:        to,
-		createdAt: time.Now(),
-		updatedAt: time.Now(),
-		rate:      rate,
+		ID:        uuid.NewString(),
+		From:      from,
+		To:        to,
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		Rate:      rate,
 	}
 }
 
 func (e *Exchange) UpdateRate(r decimal.Decimal) {
-	e.rate = r
+	e.UpdatedAt = time.Now().UTC()
+	e.Rate = r
 }
 
 // Convert method applies Exchange rate and converts from the From currency
 // to the To currency.
 func (e Exchange) Convert(fromAmount decimal.Decimal) decimal.Decimal {
-	return e.rate.Mul(fromAmount)
-}
-
-// getters
-
-func (e Exchange) From() vos.CurrencyCode {
-	return e.from
-}
-
-func (e Exchange) To() vos.CurrencyCode {
-	return e.to
-}
-
-func (e Exchange) Rate() decimal.Decimal {
-	return e.rate
+	return e.Rate.Mul(fromAmount)
 }
