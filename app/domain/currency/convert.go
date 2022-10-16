@@ -8,7 +8,7 @@ import (
 )
 
 func (uc UseCase) Convert(ctx context.Context, input ConvertInput) (ConvertOutput, error) {
-	const operation = "UseCase.Exchange.Convert"
+	const operation = "UseCase.Currency.Convert"
 
 	curs, err := uc.repo.GetCurrenciesByCode(ctx, input.From, input.To)
 	if err != nil {

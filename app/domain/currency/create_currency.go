@@ -8,7 +8,7 @@ import (
 )
 
 func (uc UseCase) CreateCurrency(ctx context.Context, input CreateCurrencyInput) (CreateCurrencyOutput, error) {
-	const operation = "UseCase.Exchange.CreateCurrency"
+	const operation = "UseCase.Currency.CreateCurrency"
 
 	cur := entities.NewCurrency(input.Code, input.USDRate)
 	err := uc.repo.CreateCurrency(ctx, cur)
