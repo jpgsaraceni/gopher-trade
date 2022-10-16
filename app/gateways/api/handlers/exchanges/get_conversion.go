@@ -1,4 +1,4 @@
-package exchanges
+package currencies
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/shopspring/decimal"
 
-	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
 	"github.com/jpgsaraceni/gopher-trade/app/domain/vos"
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/api/responses"
 	"github.com/jpgsaraceni/gopher-trade/extensions"
@@ -52,7 +52,7 @@ func (h Handler) GetConversion(w http.ResponseWriter, r *http.Request) {
 	from := vos.CurrencyCode(strings.ToUpper(fromParam))
 	to := vos.CurrencyCode(strings.ToUpper(toParam))
 
-	input := exchange.ConvertInput{
+	input := currency.ConvertInput{
 		From:       from,
 		To:         to,
 		FromAmount: amount,
@@ -62,7 +62,7 @@ func (h Handler) GetConversion(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err = extensions.ErrStack(operation, err)
 
-		if errors.Is(err, exchange.ErrNotFound) {
+		if errors.Is(err, currency.ErrNotFound) {
 			responses.NotFound(w, responses.ErrNotFoundExchange, err)
 
 			return

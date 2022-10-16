@@ -1,4 +1,4 @@
-package exchanges
+package currencies_test
 
 import (
 	"bytes"
@@ -10,12 +10,13 @@ import (
 	"testing"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/jpgsaraceni/gopher-trade/app/gateways/api/handlers/currencies"
 	"github.com/stretchr/testify/assert"
 )
 
 var testContext = context.Background()
 
-func newTestPostRequest(t *testing.T, target string, body CreateExchangeRequest) *http.Request {
+func newTestPostRequest(t *testing.T, target string, body currencies.CreateCurrencyRequest) *http.Request {
 	t.Helper()
 
 	reqPayload, err := json.Marshal(body)
