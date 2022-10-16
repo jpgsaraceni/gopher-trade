@@ -7,11 +7,11 @@ import (
 	"github.com/go-chi/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
 
-	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
-	"github.com/jpgsaraceni/gopher-trade/app/gateways/api/handlers/exchanges"
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
+	"github.com/jpgsaraceni/gopher-trade/app/gateways/api/handlers/currencies"
 )
 
-func NewRouter(exchangeUC exchange.UseCase) http.Handler {
+func NewRouter(currencyUC currency.UseCase) http.Handler {
 	corsOptions := cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "HEAD", "POST", "PUT", "OPTIONS"},
@@ -20,9 +20,9 @@ func NewRouter(exchangeUC exchange.UseCase) http.Handler {
 	r := chi.NewRouter()
 	r.Use(cors.Handler(corsOptions))
 
-	exchangeHandler := exchanges.NewHandler(exchangeUC)
-	r.Post("/exchanges", exchangeHandler.CreateExchange)
-	r.Get("/exchanges/conversion", exchangeHandler.GetConversion)
+	currencyHandler := currencies.NewHandler(currencyUC)
+	r.Post("/currencies", currencyHandler.CreateCurrency)
+	r.Get("/currencies/conversion", currencyHandler.GetConversion)
 
 	r.Get("/swagger", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "swagger/index.html", http.StatusMovedPermanently)
