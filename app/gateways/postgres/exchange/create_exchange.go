@@ -2,8 +2,12 @@ package exchange
 
 import (
 	"context"
+	"errors"
+
+	"github.com/jackc/pgconn"
 
 	"github.com/jpgsaraceni/gopher-trade/app/domain/entities"
+	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
 	"github.com/jpgsaraceni/gopher-trade/extensions"
 )
 
@@ -33,6 +37,14 @@ func (r Repository) CreateExchange(ctx context.Context, exc entities.Exchange) e
 		exc.Rate,
 	)
 	if err != nil {
+		var pgErr *pgconn.PgError
+
+		if errors.As(err, &pgErr) {
+			if pgErr.SQLState() == uniqueKeyViolationCode && pgErr.ConstraintName == fromToDBConstraint {
+				return extensions.ErrStack(operation, exchange.ErrConflict)
+			}
+		}
+
 		return extensions.ErrStack(operation, err)
 	}
 
