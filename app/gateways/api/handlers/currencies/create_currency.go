@@ -41,7 +41,7 @@ var errMissingFields = errors.New("missing required fields")
 // @Failure 500 {object} responses.ErrorPayload
 // @Router /currencies [post]
 func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
-	const operation = "Handler.Exchanges.CreateCurrency"
+	const operation = "Handler.Currencies.CreateCurrency"
 
 	var req CreateCurrencyRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

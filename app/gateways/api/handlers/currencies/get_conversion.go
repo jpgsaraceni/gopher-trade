@@ -30,9 +30,9 @@ var errMissingParams = errors.New("missing required query params")
 // @Failure 400 {object} responses.ErrorPayload
 // @Failure 404 {object} responses.ErrorPayload
 // @Failure 500 {object} responses.ErrorPayload
-// @Router /exchanges [get]
+// @Router /currencies/conversion [get]
 func (h Handler) GetConversion(w http.ResponseWriter, r *http.Request) {
-	const operation = "Handler.Exchanges.GetExchange"
+	const operation = "Handler.Currencies.GetExchange"
 
 	fromParam := r.URL.Query().Get("from")
 	toParam := r.URL.Query().Get("to")
