@@ -40,6 +40,7 @@ var errMissingFields = errors.New("missing required fields")
 // @Param account body CreateExchangeRequest true "Exchange Info"
 // @Success 201 {object} CreateExchangeResponse
 // @Failure 400 {object} responses.ErrorPayload
+// @Failure 409 {object} responses.ErrorPayload
 // @Failure 500 {object} responses.ErrorPayload
 // @Router /exchanges [post]
 func (h Handler) CreateExchange(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +76,15 @@ func (h Handler) CreateExchange(w http.ResponseWriter, r *http.Request) {
 
 	output, err := h.uc.CreateExchange(r.Context(), input)
 	if err != nil {
-		responses.InternalServerError(w, extensions.ErrStack(operation, err))
+		err = extensions.ErrStack(operation, err)
+
+		if errors.Is(err, exchange.ErrConflict) {
+			responses.Conflict(w, responses.ErrConflictFromTo, err)
+
+			return
+		}
+
+		responses.InternalServerError(w, err)
 
 		return
 	}

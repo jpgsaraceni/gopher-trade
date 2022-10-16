@@ -57,3 +57,31 @@ func assertInsertedExchange(t *testing.T, pool *pgxpool.Pool) {
 	got.UpdatedAt = got.UpdatedAt.UTC()
 	assert.Equal(t, testExc01, got)
 }
+
+func insertTestExc(t *testing.T, pool *pgxpool.Pool, exc entities.Exchange) {
+	t.Helper()
+
+	const query = `
+	INSERT INTO exchanges (
+		id,
+		"from",
+		"to",
+		created_at,
+		updated_at,
+		rate
+	)
+	VALUES ($1, $2, $3, $4, $5, $6);
+`
+	_, err := pool.Exec(
+		testContext,
+		query,
+		exc.ID,
+		exc.From.String(),
+		exc.To.String(),
+		exc.CreatedAt.UTC(),
+		exc.UpdatedAt.UTC(),
+		exc.Rate,
+	)
+
+	assert.NoError(t, err)
+}
