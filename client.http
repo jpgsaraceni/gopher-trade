@@ -1,12 +1,11 @@
 ### Create currency exchange
 ### Will return 201 first time and 409 next times
-POST http://localhost:3000/exchanges
+POST http://localhost:3000/currencies
 Content-Type: application/json
 
 {
-    "from": "USD",
-    "to": "BRL",
-    "rate":"1.1231"
+    "code": "USD",
+    "usd_rate":"1"
 }
 ### Get currency exchange conversion successfully
-GET http://localhost:3000/exchanges/conversion?from=USD&to=BRL&amount=10.2
+GET http://localhost:3000/currencies/conversion?from=USD&to=BRL&amount=1
