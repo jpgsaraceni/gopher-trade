@@ -39,9 +39,9 @@ var errMissingFields = errors.New("missing required fields")
 // @Produce json
 // @Param account body CreateExchangeRequest true "Exchange Info"
 // @Success 201 {object} CreateExchangeResponse
-// @Failure 400 {object} responses.ErrMalformedBody
-// @Failure 409 {object} responses.ErrConflictFromTo
-// @Failure 500 {object} responses.ErrInternalServerError
+// @Failure 400 {object} responses.ErrorPayload
+// @Failure 409 {object} responses.ErrorPayload
+// @Failure 500 {object} responses.ErrorPayload
 // @Router /exchanges [post]
 func (h Handler) CreateExchange(w http.ResponseWriter, r *http.Request) {
 	const operation = "Handler.Exchanges.CreateExchange"
