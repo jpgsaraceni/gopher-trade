@@ -23,7 +23,7 @@ var (
 		UpdatedAt: time.Date(2010, time.January, 10, 10, 0, 0, 0, time.UTC),
 		Rate:      decimal.NewFromFloat(1.2345),
 	}
-	errRepository = fmt.Errorf("uh oh in repository")
+	testErrRepository = fmt.Errorf("uh oh in repository") //nolint
 )
 
 func assertExchange(t *testing.T, want, got entities.Exchange) {

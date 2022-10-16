@@ -37,7 +37,7 @@ var errMissingFields = errors.New("missing required fields")
 // @Tags Exchange
 // @Accept json
 // @Produce json
-// @Param account body CreateExchangeRequest true "Exchange Info"
+// @Param exchange body CreateExchangeRequest true "Exchange Info"
 // @Success 201 {object} CreateExchangeResponse
 // @Failure 400 {object} responses.ErrorPayload
 // @Failure 409 {object} responses.ErrorPayload

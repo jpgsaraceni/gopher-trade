@@ -22,6 +22,7 @@ func NewRouter(exchangeUC exchange.UseCase) http.Handler {
 
 	exchangeHandler := exchanges.NewHandler(exchangeUC)
 	r.Post("/exchanges", exchangeHandler.CreateExchange)
+	r.Get("/exchanges/conversion", exchangeHandler.GetConversion)
 
 	r.Get("/swagger", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "swagger/index.html", http.StatusMovedPermanently)

@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/jpgsaraceni/gopher-trade/app/domain/entities"
+	"github.com/jpgsaraceni/gopher-trade/app/domain/vos"
 )
 
 // Ensure, that RepositoryMock does implement Repository.
@@ -23,6 +24,9 @@ var _ Repository = &RepositoryMock{}
 // 			CreateExchangeFunc: func(ctx context.Context, exc entities.Exchange) error {
 // 				panic("mock out the CreateExchange method")
 // 			},
+// 			GetExchangeByCurrenciesFunc: func(ctx context.Context, from vos.CurrencyCode, to vos.CurrencyCode) (entities.Exchange, error) {
+// 				panic("mock out the GetExchangeByCurrencies method")
+// 			},
 // 		}
 //
 // 		// use mockedRepository in code that requires Repository
@@ -33,6 +37,9 @@ type RepositoryMock struct {
 	// CreateExchangeFunc mocks the CreateExchange method.
 	CreateExchangeFunc func(ctx context.Context, exc entities.Exchange) error
 
+	// GetExchangeByCurrenciesFunc mocks the GetExchangeByCurrencies method.
+	GetExchangeByCurrenciesFunc func(ctx context.Context, from vos.CurrencyCode, to vos.CurrencyCode) (entities.Exchange, error)
+
 	// calls tracks calls to the methods.
 	calls struct {
 		// CreateExchange holds details about calls to the CreateExchange method.
@@ -42,8 +49,18 @@ type RepositoryMock struct {
 			// Exc is the exc argument value.
 			Exc entities.Exchange
 		}
+		// GetExchangeByCurrencies holds details about calls to the GetExchangeByCurrencies method.
+		GetExchangeByCurrencies []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// From is the from argument value.
+			From vos.CurrencyCode
+			// To is the to argument value.
+			To vos.CurrencyCode
+		}
 	}
-	lockCreateExchange sync.RWMutex
+	lockCreateExchange          sync.RWMutex
+	lockGetExchangeByCurrencies sync.RWMutex
 }
 
 // CreateExchange calls CreateExchangeFunc.
@@ -78,5 +95,44 @@ func (mock *RepositoryMock) CreateExchangeCalls() []struct {
 	mock.lockCreateExchange.RLock()
 	calls = mock.calls.CreateExchange
 	mock.lockCreateExchange.RUnlock()
+	return calls
+}
+
+// GetExchangeByCurrencies calls GetExchangeByCurrenciesFunc.
+func (mock *RepositoryMock) GetExchangeByCurrencies(ctx context.Context, from vos.CurrencyCode, to vos.CurrencyCode) (entities.Exchange, error) {
+	if mock.GetExchangeByCurrenciesFunc == nil {
+		panic("RepositoryMock.GetExchangeByCurrenciesFunc: method is nil but Repository.GetExchangeByCurrencies was just called")
+	}
+	callInfo := struct {
+		Ctx  context.Context
+		From vos.CurrencyCode
+		To   vos.CurrencyCode
+	}{
+		Ctx:  ctx,
+		From: from,
+		To:   to,
+	}
+	mock.lockGetExchangeByCurrencies.Lock()
+	mock.calls.GetExchangeByCurrencies = append(mock.calls.GetExchangeByCurrencies, callInfo)
+	mock.lockGetExchangeByCurrencies.Unlock()
+	return mock.GetExchangeByCurrenciesFunc(ctx, from, to)
+}
+
+// GetExchangeByCurrenciesCalls gets all the calls that were made to GetExchangeByCurrencies.
+// Check the length with:
+//     len(mockedRepository.GetExchangeByCurrenciesCalls())
+func (mock *RepositoryMock) GetExchangeByCurrenciesCalls() []struct {
+	Ctx  context.Context
+	From vos.CurrencyCode
+	To   vos.CurrencyCode
+} {
+	var calls []struct {
+		Ctx  context.Context
+		From vos.CurrencyCode
+		To   vos.CurrencyCode
+	}
+	mock.lockGetExchangeByCurrencies.RLock()
+	calls = mock.calls.GetExchangeByCurrencies
+	mock.lockGetExchangeByCurrencies.RUnlock()
 	return calls
 }

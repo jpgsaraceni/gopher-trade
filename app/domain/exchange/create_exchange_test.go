@@ -50,14 +50,14 @@ func Test_UseCase_CreateExchange(t *testing.T) {
 			fields: func(t *testing.T) exchange.UseCase {
 				return exchange.NewUseCase(&exchange.RepositoryMock{
 					CreateExchangeFunc: func(ctx context.Context, exc entities.Exchange) error {
-						return errRepository
+						return testErrRepository
 					},
 				})
 			},
 			input: exchange.CreateExchangeInput{},
 			want: want{
 				output: exchange.CreateExchangeOutput{},
-				err:    errRepository,
+				err:    testErrRepository,
 			},
 		},
 	}

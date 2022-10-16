@@ -25,6 +25,67 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/exchanges": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exchange"
+                ],
+                "summary": "Get a conversion for an existent rate",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "From currency code",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "To currency code",
+                        "name": "to",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Amount to be converted",
+                        "name": "amount",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/exchanges.GetConversionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorPayload"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorPayload"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorPayload"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Creates an exchange rate from and to specified currencies.\nNote that from-to currency pairs must be unique.",
                 "consumes": [
@@ -40,7 +101,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Exchange Info",
-                        "name": "account",
+                        "name": "exchange",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -119,6 +180,15 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "exchanges.GetConversionResponse": {
+            "type": "object",
+            "properties": {
+                "converted_amount": {
+                    "type": "string",
+                    "example": "23.431"
                 }
             }
         },

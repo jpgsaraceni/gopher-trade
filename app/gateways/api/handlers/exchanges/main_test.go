@@ -15,21 +15,46 @@ import (
 
 var testContext = context.Background()
 
-func newTestRequest(t *testing.T, method, target string, body CreateExchangeRequest) *http.Request {
+func newTestPostRequest(t *testing.T, target string, body CreateExchangeRequest) *http.Request {
 	t.Helper()
 
 	reqPayload, err := json.Marshal(body)
 	assert.NoError(t, err)
 	reader := bytes.NewReader(reqPayload)
-	request, err := http.NewRequestWithContext(testContext, method, target, reader)
+	request, err := http.NewRequestWithContext(testContext, http.MethodPost, target, reader)
 	assert.NoError(t, err)
 
 	return request
 }
 
-func newTestResponse(h http.HandlerFunc, req *http.Request, target string) *httptest.ResponseRecorder {
+func newTestPostResponse(h http.HandlerFunc, req *http.Request, target string) *httptest.ResponseRecorder {
 	router := chi.NewRouter()
 	router.Post(target, h)
+	res := httptest.NewRecorder()
+	router.ServeHTTP(res, req)
+
+	return res
+}
+
+func newTestGetRequest(t *testing.T, target string, params map[string]string) *http.Request {
+	t.Helper()
+
+	if len(params) > 0 {
+		separater := "?"
+		for key, value := range params {
+			target += separater + key + "=" + value
+			separater = "&"
+		}
+	}
+	request, err := http.NewRequestWithContext(testContext, http.MethodGet, target, nil)
+	assert.NoError(t, err)
+
+	return request
+}
+
+func newTestGetResponse(h http.HandlerFunc, req *http.Request, target string) *httptest.ResponseRecorder {
+	router := chi.NewRouter()
+	router.Get(target, h)
 	res := httptest.NewRecorder()
 	router.ServeHTTP(res, req)
 

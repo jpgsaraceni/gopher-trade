@@ -20,6 +20,9 @@ var _ Exchange = &ExchangeMock{}
 //
 // 		// make and configure a mocked Exchange
 // 		mockedExchange := &ExchangeMock{
+// 			ConvertFunc: func(ctx context.Context, input exchange.ConvertInput) (exchange.ConvertOutput, error) {
+// 				panic("mock out the Convert method")
+// 			},
 // 			CreateExchangeFunc: func(ctx context.Context, input exchange.CreateExchangeInput) (exchange.CreateExchangeOutput, error) {
 // 				panic("mock out the CreateExchange method")
 // 			},
@@ -30,11 +33,21 @@ var _ Exchange = &ExchangeMock{}
 //
 // 	}
 type ExchangeMock struct {
+	// ConvertFunc mocks the Convert method.
+	ConvertFunc func(ctx context.Context, input exchange.ConvertInput) (exchange.ConvertOutput, error)
+
 	// CreateExchangeFunc mocks the CreateExchange method.
 	CreateExchangeFunc func(ctx context.Context, input exchange.CreateExchangeInput) (exchange.CreateExchangeOutput, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
+		// Convert holds details about calls to the Convert method.
+		Convert []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Input is the input argument value.
+			Input exchange.ConvertInput
+		}
 		// CreateExchange holds details about calls to the CreateExchange method.
 		CreateExchange []struct {
 			// Ctx is the ctx argument value.
@@ -43,7 +56,43 @@ type ExchangeMock struct {
 			Input exchange.CreateExchangeInput
 		}
 	}
+	lockConvert        sync.RWMutex
 	lockCreateExchange sync.RWMutex
+}
+
+// Convert calls ConvertFunc.
+func (mock *ExchangeMock) Convert(ctx context.Context, input exchange.ConvertInput) (exchange.ConvertOutput, error) {
+	if mock.ConvertFunc == nil {
+		panic("ExchangeMock.ConvertFunc: method is nil but Exchange.Convert was just called")
+	}
+	callInfo := struct {
+		Ctx   context.Context
+		Input exchange.ConvertInput
+	}{
+		Ctx:   ctx,
+		Input: input,
+	}
+	mock.lockConvert.Lock()
+	mock.calls.Convert = append(mock.calls.Convert, callInfo)
+	mock.lockConvert.Unlock()
+	return mock.ConvertFunc(ctx, input)
+}
+
+// ConvertCalls gets all the calls that were made to Convert.
+// Check the length with:
+//     len(mockedExchange.ConvertCalls())
+func (mock *ExchangeMock) ConvertCalls() []struct {
+	Ctx   context.Context
+	Input exchange.ConvertInput
+} {
+	var calls []struct {
+		Ctx   context.Context
+		Input exchange.ConvertInput
+	}
+	mock.lockConvert.RLock()
+	calls = mock.calls.Convert
+	mock.lockConvert.RUnlock()
+	return calls
 }
 
 // CreateExchange calls CreateExchangeFunc.

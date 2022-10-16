@@ -30,6 +30,12 @@ definitions:
       updated_at:
         type: string
     type: object
+  exchanges.GetConversionResponse:
+    properties:
+      converted_amount:
+        example: "23.431"
+        type: string
+    type: object
   responses.ErrorPayload:
     properties:
       error:
@@ -49,6 +55,47 @@ info:
   version: 0.1.0
 paths:
   /exchanges:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: From currency code
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: To currency code
+        in: query
+        name: to
+        required: true
+        type: string
+      - description: Amount to be converted
+        in: query
+        name: amount
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/exchanges.GetConversionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+      summary: Get a conversion for an existent rate
+      tags:
+      - Exchange
     post:
       consumes:
       - application/json
@@ -58,7 +105,7 @@ paths:
       parameters:
       - description: Exchange Info
         in: body
-        name: account
+        name: exchange
         required: true
         schema:
           $ref: '#/definitions/exchanges.CreateExchangeRequest'
