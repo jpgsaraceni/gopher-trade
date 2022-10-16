@@ -3,11 +3,11 @@ package domain
 import (
 	"context"
 
-	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
 )
 
-//go:generate moq -fmt goimports -out exchange_mock.go . Exchange
-type Exchange interface {
-	CreateExchange(ctx context.Context, input exchange.CreateExchangeInput) (exchange.CreateExchangeOutput, error)
-	Convert(ctx context.Context, input exchange.ConvertInput) (exchange.ConvertOutput, error)
+//go:generate moq -fmt goimports -out currency_mock.go . Currency
+type Currency interface {
+	CreateCurrency(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error)
+	Convert(ctx context.Context, input currency.ConvertInput) (currency.ConvertOutput, error)
 }
