@@ -18,7 +18,8 @@ func NewUseCase(r Repository) UseCase {
 }
 
 type ConvertInput struct {
-	Exchange   entities.Exchange
+	From       vos.CurrencyCode
+	To         vos.CurrencyCode
 	FromAmount decimal.Decimal
 }
 
