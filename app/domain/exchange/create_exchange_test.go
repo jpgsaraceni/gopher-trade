@@ -1,62 +1,65 @@
-package exchange_test
+package currency_test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
 	"github.com/jpgsaraceni/gopher-trade/app/domain/entities"
-	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
 )
 
-func Test_UseCase_CreateExchange(t *testing.T) {
+func Test_UseCase_CreateCurrency(t *testing.T) {
 	t.Parallel()
 
 	type want struct {
 		err    error
-		output exchange.CreateExchangeOutput
+		output currency.CreateCurrencyOutput
 	}
 
 	tableTests := []struct {
 		name   string
-		fields func(t *testing.T) exchange.UseCase
-		input  exchange.CreateExchangeInput
+		fields func(t *testing.T) currency.UseCase
+		input  currency.CreateCurrencyInput
 		want
 	}{
 		{
-			name: "should create exchange",
-			fields: func(t *testing.T) exchange.UseCase {
-				return exchange.NewUseCase(&exchange.RepositoryMock{
-					CreateExchangeFunc: func(ctx context.Context, exc entities.Exchange) error {
+			name: "should create currency",
+			fields: func(t *testing.T) currency.UseCase {
+				return currency.NewUseCase(&currency.RepositoryMock{
+					CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
 						return nil
 					},
 				})
 			},
-			input: exchange.CreateExchangeInput{
-				From: testExc01.From,
-				To:   testExc01.To,
-				Rate: testExc01.Rate,
+			input: currency.CreateCurrencyInput{
+				Code:    "TEST",
+				USDRate: decimal.NewFromFloat(1.23),
 			},
 			want: want{
-				output: exchange.CreateExchangeOutput{
-					Exc: testExc01,
+				output: currency.CreateCurrencyOutput{
+					Currency: entities.Currency{
+						Code:    "TEST",
+						USDRate: decimal.NewFromFloat(1.23),
+					},
 				},
 				err: nil,
 			},
 		},
 		{
 			name: "should return error when something goes wrong in repository",
-			fields: func(t *testing.T) exchange.UseCase {
-				return exchange.NewUseCase(&exchange.RepositoryMock{
-					CreateExchangeFunc: func(ctx context.Context, exc entities.Exchange) error {
+			fields: func(t *testing.T) currency.UseCase {
+				return currency.NewUseCase(&currency.RepositoryMock{
+					CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
 						return testErrRepository
 					},
 				})
 			},
-			input: exchange.CreateExchangeInput{},
+			input: currency.CreateCurrencyInput{},
 			want: want{
-				output: exchange.CreateExchangeOutput{},
+				output: currency.CreateCurrencyOutput{},
 				err:    testErrRepository,
 			},
 		},
@@ -68,8 +71,8 @@ func Test_UseCase_CreateExchange(t *testing.T) {
 			t.Parallel()
 			uc := tt.fields(t)
 
-			got, err := uc.CreateExchange(testContext, tt.input)
-			assertExchange(t, tt.want.output.Exc, got.Exc)
+			got, err := uc.CreateCurrency(testContext, tt.input)
+			assertCurrency(t, tt.want.output.Currency, got.Currency)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}

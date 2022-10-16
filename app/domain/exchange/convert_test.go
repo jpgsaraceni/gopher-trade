@@ -1,4 +1,4 @@
-package exchange_test
+package currency_test
 
 import (
 	"context"
@@ -7,9 +7,10 @@ import (
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
 	"github.com/jpgsaraceni/gopher-trade/app/domain/entities"
-	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
 	"github.com/jpgsaraceni/gopher-trade/app/domain/vos"
+	"github.com/jpgsaraceni/gopher-trade/extensions"
 )
 
 func Test_UseCase_Convert(t *testing.T) {
@@ -17,57 +18,57 @@ func Test_UseCase_Convert(t *testing.T) {
 
 	type want struct {
 		err    error
-		output exchange.ConvertOutput
+		output currency.ConvertOutput
 	}
 
 	tableTests := []struct {
 		name   string
-		fields func(t *testing.T) exchange.Repository
-		input  exchange.ConvertInput
+		fields func(t *testing.T) currency.Repository
+		input  currency.ConvertInput
 		want
 	}{
 		{
-			name: "should return conversion",
-			fields: func(t *testing.T) exchange.Repository {
-				return &exchange.RepositoryMock{
-					GetExchangeByCurrenciesFunc: func(ctx context.Context, from, to vos.CurrencyCode) (entities.Exchange, error) {
-						assert.Equal(t, "USD", from.String())
-						assert.Equal(t, "BRL", to.String())
+			name: "should return currencies",
+			fields: func(t *testing.T) currency.Repository {
+				return &currency.RepositoryMock{
+					GetCurrenciesByCodeFunc: func(ctx context.Context, code ...vos.CurrencyCode) (map[vos.CurrencyCode]entities.Currency, error) { //nolint
+						assert.Equal(t, "FIXT1", code[0].String())
+						assert.Equal(t, "FIXT2", code[1].String())
 
-						return testExc01, nil
+						return map[vos.CurrencyCode]entities.Currency{
+							"FIXT1": extensions.CurrencyFixtures[0], // 1.5
+							"FIXT2": extensions.CurrencyFixtures[1], // 2.134
+						}, nil
 					},
 				}
 			},
-			input: exchange.ConvertInput{
-				From:       "USD",
-				To:         "BRL",
+			input: currency.ConvertInput{
+				From:       "FIXT1",
+				To:         "FIXT2",
 				FromAmount: decimal.NewFromFloat(2.25),
 			},
 			want: want{
-				output: exchange.ConvertOutput{
-					decimal.NewFromFloat(2.777625),
+				output: currency.ConvertOutput{
+					decimal.NewFromFloat(1.5815370196813496),
 				},
 			},
 		},
 		{
 			name: "should return repository error",
-			fields: func(t *testing.T) exchange.Repository {
-				return &exchange.RepositoryMock{
-					GetExchangeByCurrenciesFunc: func(ctx context.Context, from, to vos.CurrencyCode) (entities.Exchange, error) {
-						assert.Equal(t, "USD", from.String())
-						assert.Equal(t, "BRL", to.String())
-
-						return entities.Exchange{}, testErrRepository
+			fields: func(t *testing.T) currency.Repository {
+				return &currency.RepositoryMock{
+					GetCurrenciesByCodeFunc: func(ctx context.Context, code ...vos.CurrencyCode) (map[vos.CurrencyCode]entities.Currency, error) { //nolint
+						return nil, testErrRepository
 					},
 				}
 			},
-			input: exchange.ConvertInput{
+			input: currency.ConvertInput{
 				From:       "USD",
 				To:         "BRL",
 				FromAmount: decimal.NewFromFloat(2.25),
 			},
 			want: want{
-				output: exchange.ConvertOutput{},
+				output: currency.ConvertOutput{},
 				err:    testErrRepository,
 			},
 		},
@@ -77,7 +78,7 @@ func Test_UseCase_Convert(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			uc := exchange.NewUseCase(tt.fields(t))
+			uc := currency.NewUseCase(tt.fields(t))
 
 			got, err := uc.Convert(testContext, tt.input)
 			assert.ErrorIs(t, err, tt.want.err, got)

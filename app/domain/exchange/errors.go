@@ -1,8 +1,8 @@
-package exchange
+package currency
 
 import "errors"
 
 var (
-	ErrConflict = errors.New("exchange rate already exists in db")
-	ErrNotFound = errors.New("from-to pair not found")
+	ErrConflict = errors.New("currency code already exists in db")
+	ErrNotFound = errors.New("currency not found")
 )

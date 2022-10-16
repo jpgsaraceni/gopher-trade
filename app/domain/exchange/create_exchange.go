@@ -1,4 +1,4 @@
-package exchange
+package currency
 
 import (
 	"context"
@@ -7,16 +7,16 @@ import (
 	"github.com/jpgsaraceni/gopher-trade/extensions"
 )
 
-func (uc UseCase) CreateExchange(ctx context.Context, input CreateExchangeInput) (CreateExchangeOutput, error) {
-	const operation = "UseCase.Exchange.CreateExchange"
+func (uc UseCase) CreateCurrency(ctx context.Context, input CreateCurrencyInput) (CreateCurrencyOutput, error) {
+	const operation = "UseCase.Exchange.CreateCurrency"
 
-	exc := entities.NewExchange(input.From, input.To, input.Rate)
-	err := uc.repo.CreateExchange(ctx, exc)
+	cur := entities.NewCurrency(input.Code, input.USDRate)
+	err := uc.repo.CreateCurrency(ctx, cur)
 	if err != nil {
-		return CreateExchangeOutput{}, extensions.ErrStack(operation, err)
+		return CreateCurrencyOutput{}, extensions.ErrStack(operation, err)
 	}
 
-	return CreateExchangeOutput{
-		Exc: exc,
+	return CreateCurrencyOutput{
+		Currency: cur,
 	}, nil
 }
