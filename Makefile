@@ -14,7 +14,8 @@ test:
 .PHONY: install-tools
 install-tools:
 	@echo "Installing development tools"
-	go install github.com/matryer/moq@latest
+	go install github.com/matryer/moq@v0.2.7
+	go install github.com/swaggo/swag/cmd/swag@v1.8.4
 
 .PHONY: clean-generated
 clean-generated:
@@ -28,11 +29,12 @@ generate: clean-generated install-tools
 	go mod tidy
 	@echo "Running go generate"
 	go generate ./...
+	@echo "Generating Swagger"
 
 .PHONY: api
 api:
 	@echo "Running Gopher Trade API on docker container..."
-	docker-compose up -d
+	docker-compose up -d --build
 
 .PHONY: stop
 stop:

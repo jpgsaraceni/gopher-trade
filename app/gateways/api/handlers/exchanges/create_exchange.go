@@ -31,6 +31,17 @@ type CreateExchangeResponse struct {
 
 var errMissingFields = errors.New("missing required fields")
 
+// @Summary Create a new exchange rate
+// @Description Creates an exchange rate from and to specified currencies.
+// @Description Note that from-to currency pairs must be unique.
+// @Tags Exchange
+// @Accept json
+// @Produce json
+// @Param account body CreateExchangeRequest true "Exchange Info"
+// @Success 201 {object} CreateExchangeResponse
+// @Failure 400 {object} responses.ErrorPayload
+// @Failure 500 {object} responses.ErrorPayload
+// @Router /exchanges [post]
 func (h Handler) CreateExchange(w http.ResponseWriter, r *http.Request) {
 	const operation = "Handler.Exchanges.CreateExchange"
 

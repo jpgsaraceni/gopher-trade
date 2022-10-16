@@ -16,6 +16,7 @@ import (
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/api"
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/postgres"
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/postgres/exchange"
+	"github.com/jpgsaraceni/gopher-trade/docs"
 )
 
 const (
@@ -23,6 +24,16 @@ const (
 	graceTime      = 5 * time.Second
 )
 
+// @title Gopher Trade API
+// @version 0.1.0
+// @description Gopher Trade is an api to get monetary exchange values.
+
+// @contact.name João Saraceni
+// @contact.url https://www.linkedin.com/in/joaosaraceni/
+// @contact.email jpgome@id.uff.br
+
+// @license.name MIT
+// @license.url https://github.com/jpgsaraceni/gopher-trade/blob/main/LICENSE
 func main() {
 	ctx := context.Background()
 	// allow graceful shutdown of goroutines.
@@ -59,6 +70,7 @@ func startAPI(ctx context.Context, shutdown *sync.WaitGroup, router http.Handler
 		ReadTimeout:  defaultTimeout,
 	}
 
+	docs.SwaggerInfo.Host = address
 	// tell the wait group there is a go routine running
 	shutdown.Add(1)
 	go runServer(shutdown, address, srv)
