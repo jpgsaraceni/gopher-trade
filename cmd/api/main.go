@@ -12,10 +12,10 @@ import (
 	"syscall"
 	"time"
 
-	exchangeDomain "github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/api"
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/postgres"
-	"github.com/jpgsaraceni/gopher-trade/app/gateways/postgres/exchange"
+	"github.com/jpgsaraceni/gopher-trade/app/gateways/postgres/currencypg"
 	"github.com/jpgsaraceni/gopher-trade/docs"
 )
 
@@ -50,11 +50,11 @@ func main() {
 	defer pgPool.Close()
 
 	// inject dependencies
-	exchangeRepo := exchange.NewRepository(pgPool)
-	exchangeUC := exchangeDomain.NewUseCase(exchangeRepo)
+	currencyRepo := currencypg.NewRepository(pgPool)
+	currencyUC := currency.NewUseCase(currencyRepo)
 
 	// build http router
-	router := api.NewRouter(exchangeUC)
+	router := api.NewRouter(currencyUC)
 	startAPI(ctx, appShutdown, router)
 
 	// wait for graceful shutdown
