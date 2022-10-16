@@ -9,7 +9,7 @@ endif
 .PHONY: test
 test:
 	@echo "Running go tests"
-	go test -v ./...
+	go test -v -race ./...
 
 .PHONY: install-tools
 install-tools:
