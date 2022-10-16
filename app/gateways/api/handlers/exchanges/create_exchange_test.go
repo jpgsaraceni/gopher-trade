@@ -182,8 +182,8 @@ func Test_Handler_CreateExchange(t *testing.T) {
 			t.Parallel()
 			h := NewHandler(tt.uc)
 
-			req := newTestRequest(t, http.MethodPost, target, tt.args)
-			res := newTestResponse(h.CreateExchange, req, target)
+			req := newTestPostRequest(t, target, tt.args)
+			res := newTestPostResponse(h.CreateExchange, req, target)
 			assertResponse(t, tt.wantStatus, tt.wantBody, res)
 		})
 	}
