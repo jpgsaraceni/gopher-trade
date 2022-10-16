@@ -9,34 +9,36 @@ import (
 	"github.com/jpgsaraceni/gopher-trade/app/domain/vos"
 )
 
-type Exchange struct {
+type Currency struct {
 	ID        string
-	From      vos.CurrencyCode
-	To        vos.CurrencyCode
+	Code      vos.CurrencyCode
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Rate      decimal.Decimal
+	USDRate   decimal.Decimal
 }
 
-// NewExchange generates an ID (UUID) and timestamps and returns an Exchange struct.
-func NewExchange(from, to vos.CurrencyCode, rate decimal.Decimal) Exchange {
-	return Exchange{
+// NewCurrency generates an ID (UUID) and timestamps and returns an instance of Currency.
+func NewCurrency(code vos.CurrencyCode, usdRate decimal.Decimal) Currency {
+	return Currency{
 		ID:        uuid.NewString(),
-		From:      from,
-		To:        to,
+		Code:      code,
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
-		Rate:      rate,
+		USDRate:   usdRate,
 	}
 }
 
-func (e *Exchange) UpdateRate(r decimal.Decimal) {
-	e.UpdatedAt = time.Now().UTC()
-	e.Rate = r
+func (c *Currency) UpdateCurrency(r decimal.Decimal) {
+	c.UpdatedAt = time.Now().UTC()
+	c.USDRate = r
 }
 
-// Convert method applies Exchange rate and converts from the From currency
-// to the To currency.
-func (e Exchange) Convert(fromAmount decimal.Decimal) decimal.Decimal {
-	return e.Rate.Mul(fromAmount)
+// Convert converts amount in original currency to dollars then to target currency
+// using their USD rates.
+func Convert(original, target Currency, amount decimal.Decimal) decimal.Decimal {
+	decimal.DivisionPrecision = 5 // TODO: move to env
+	fromInUSD := amount.Mul(original.USDRate)
+	result := fromInUSD.Div(target.USDRate)
+
+	return result
 }
