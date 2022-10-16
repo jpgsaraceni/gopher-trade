@@ -8,8 +8,8 @@ type Handler struct {
 	uc domain.Exchange
 }
 
-func NewHandler(uc domain.Exchange) Handler {
-	return Handler{
+func NewHandler(uc domain.Exchange) *Handler {
+	return &Handler{
 		uc: uc,
 	}
 }

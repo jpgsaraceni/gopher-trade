@@ -6,10 +6,9 @@ Gopher Trade is a currency conversion API built in Go. References are scattered 
 
 * [Features](#features)
   * [Development](#development)
+  * [API](#api)
 * [Testing](#testing)
-* [Run locally](#run-locally)
-  * [Requirements (running without Docker)](#requirements-running-without-docker)
-  * [Execution](#execution)
+* [Running locally](#running-locally)
 * [Application Dependencies](#aplication-dependencies)
 * [Tech Specs](#tech-specs)
   * [Architecture](#architecture)
@@ -25,27 +24,48 @@ Project (development) and product (API) features:
 * CI (GitHub Actions) - Runs tests, linters and compares generated files on Pull Requests to main (which is a protected branch);
 * Lint (golangci-lint) - Enforces style and best practices;
 * Makefile - Simplifies running tests, dependencies and application.
+* Docker Compose - Runs API and dependencies with no configuration and on any OS/arch
 
 ### API
 
-coming soon...
+Gopher Trade (currently) allows users to register custom conversion rates between any currencies.
+
+TODO:
+
+* Get a conversion from custom rate;
+* Get a conversion from real live rate;
+* Update a custom convertion rate
+
+On the `client.http` file in the root of this repository you can find examples of how to use the available endpoints. A Swagger UI documentation is coming soon :)
 
 ## Testing
 
 This project does not aim to have 100% test coverage. Also, its development did not follow strict TDD doctrine, instead it [aimed to test behaviour](https://dave.cheney.net/paste/absolute-unit-test-london-gophers.pdf).
 
-## Run locally
-
-### Requirements (running without Docker)
-
-* [Golang](https://go.dev/dl/) v1.18+
-
-### Execution
-
-The app is not runnable yet. You can execute all unit tests by running:
+To run all automated tests (unit and integration):
 
 ```bash
 make test
+```
+
+## Running locally
+
+Just enter:
+
+```bash
+make api
+```
+
+in your terminal and voilà! It will run an image of a postgres db and the Gopher Trade API on docker containers. To stop you can use:
+
+```bach
+make stop
+```
+
+And to see the db and app logs:
+
+```bash
+make logs
 ```
 
 ## Aplication Dependencies

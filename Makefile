@@ -28,3 +28,17 @@ generate: clean-generated install-tools
 	go mod tidy
 	@echo "Running go generate"
 	go generate ./...
+
+.PHONY: api
+api:
+	@echo "Running Gopher Trade API on docker container..."
+	docker-compose up -d
+
+.PHONY: stop
+stop:
+	@echo "Stopping Gopher Trade API"
+	docker-compose down
+
+.PHONY: logs
+logs:
+	docker-compose logs
