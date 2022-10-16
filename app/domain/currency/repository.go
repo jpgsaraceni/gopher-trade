@@ -1,4 +1,4 @@
-package exchange
+package currency
 
 import (
 	"context"
@@ -9,6 +9,6 @@ import (
 
 //go:generate moq -fmt goimports -out repository_mock.go . Repository
 type Repository interface {
-	CreateExchange(ctx context.Context, exc entities.Exchange) error
-	GetExchangeByCurrencies(ctx context.Context, from, to vos.CurrencyCode) (entities.Exchange, error)
+	CreateCurrency(ctx context.Context, cur entities.Currency) error
+	GetCurrenciesByCode(ctx context.Context, code ...vos.CurrencyCode) (map[vos.CurrencyCode]entities.Currency, error)
 }

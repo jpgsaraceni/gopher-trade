@@ -1,10 +1,10 @@
-package exchange
+package currencypg
 
 import "github.com/jackc/pgx/v4/pgxpool"
 
 const (
-	uniqueKeyViolationCode = "23505"
-	fromToDBConstraint     = "exchanges_from_to_key"
+	uniqueKeyViolationCode   = "23505"
+	currenciesCodeConstraint = "currencies_code_key"
 )
 
 type Repository struct {

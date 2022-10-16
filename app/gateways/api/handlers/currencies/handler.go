@@ -1,14 +1,14 @@
-package exchanges
+package currencies
 
 import (
 	"github.com/jpgsaraceni/gopher-trade/app/domain"
 )
 
 type Handler struct {
-	uc domain.Exchange
+	uc domain.Currency
 }
 
-func NewHandler(uc domain.Exchange) *Handler {
+func NewHandler(uc domain.Currency) *Handler {
 	return &Handler{
 		uc: uc,
 	}

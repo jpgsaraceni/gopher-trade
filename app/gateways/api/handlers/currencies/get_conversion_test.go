@@ -1,4 +1,4 @@
-package exchanges
+package currencies_test
 
 import (
 	"context"
@@ -11,26 +11,27 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/jpgsaraceni/gopher-trade/app/domain"
-	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
+	"github.com/jpgsaraceni/gopher-trade/app/gateways/api/handlers/currencies"
 )
 
 func Test_Handler_GetConversion(t *testing.T) {
 	t.Parallel()
 
-	const target = "/exchanges/conversion"
+	const target = "/currencys/conversion"
 
 	tests := []struct {
 		name       string
-		uc         func(t *testing.T) domain.Exchange
+		uc         func(t *testing.T) domain.Currency
 		params     map[string]string
 		wantBody   json.RawMessage
 		wantStatus int
 	}{
 		{
 			name: "should get a conversion",
-			uc: func(t *testing.T) domain.Exchange {
-				return &domain.ExchangeMock{
-					ConvertFunc: func(ctx context.Context, input exchange.ConvertInput) (exchange.ConvertOutput, error) {
+			uc: func(t *testing.T) domain.Currency {
+				return &domain.CurrencyMock{
+					ConvertFunc: func(ctx context.Context, input currency.ConvertInput) (currency.ConvertOutput, error) {
 						inputAmount, err := decimal.NewFromString("1.23")
 						assert.NoError(t, err)
 						convertedAmount, err := decimal.NewFromString("10.12")
@@ -39,7 +40,7 @@ func Test_Handler_GetConversion(t *testing.T) {
 						assert.Equal(t, "BRL", input.To.String())
 						assert.Equal(t, inputAmount, input.FromAmount)
 
-						return exchange.ConvertOutput{
+						return currency.ConvertOutput{
 							ConvertedAmount: convertedAmount,
 						}, nil
 					},
@@ -57,8 +58,8 @@ func Test_Handler_GetConversion(t *testing.T) {
 		},
 		{
 			name: "should return 400 when missing params",
-			uc: func(t *testing.T) domain.Exchange {
-				return &domain.ExchangeMock{}
+			uc: func(t *testing.T) domain.Currency {
+				return &domain.CurrencyMock{}
 			},
 			params: map[string]string{},
 			wantBody: json.RawMessage(`{
@@ -68,8 +69,8 @@ func Test_Handler_GetConversion(t *testing.T) {
 		},
 		{
 			name: "should return 400 when amount params is not a number",
-			uc: func(t *testing.T) domain.Exchange {
-				return &domain.ExchangeMock{}
+			uc: func(t *testing.T) domain.Currency {
+				return &domain.CurrencyMock{}
 			},
 			params: map[string]string{
 				"from":   "USD",
@@ -77,16 +78,16 @@ func Test_Handler_GetConversion(t *testing.T) {
 				"amount": "NaN",
 			},
 			wantBody: json.RawMessage(`{
-				"error":"Invalid rate. Must be an integer or point separated decimal number."
+				"error":"Invalid amount. Must be an integer or point separated decimal number."
 			}`),
 			wantStatus: http.StatusBadRequest,
 		},
 		{
-			name: "should return 404 when from-to currencie pair does not exist",
-			uc: func(t *testing.T) domain.Exchange {
-				return &domain.ExchangeMock{
-					ConvertFunc: func(ctx context.Context, input exchange.ConvertInput) (exchange.ConvertOutput, error) {
-						return exchange.ConvertOutput{}, exchange.ErrNotFound
+			name: "should return 404 when currencies pair does not exist",
+			uc: func(t *testing.T) domain.Currency {
+				return &domain.CurrencyMock{
+					ConvertFunc: func(ctx context.Context, input currency.ConvertInput) (currency.ConvertOutput, error) {
+						return currency.ConvertOutput{}, currency.ErrNotFound
 					},
 				}
 			},
@@ -96,16 +97,16 @@ func Test_Handler_GetConversion(t *testing.T) {
 				"amount": "1.23",
 			},
 			wantBody: json.RawMessage(`{
-				"error":"No conversion found for from-to currencies pair."
+				"error":"Currency pair not found."
 			}`),
 			wantStatus: http.StatusNotFound,
 		},
 		{
 			name: "should return 500 when use case returns unexpected error",
-			uc: func(t *testing.T) domain.Exchange {
-				return &domain.ExchangeMock{
-					ConvertFunc: func(ctx context.Context, input exchange.ConvertInput) (exchange.ConvertOutput, error) {
-						return exchange.ConvertOutput{}, fmt.Errorf("uh oh in use case")
+			uc: func(t *testing.T) domain.Currency {
+				return &domain.CurrencyMock{
+					ConvertFunc: func(ctx context.Context, input currency.ConvertInput) (currency.ConvertOutput, error) {
+						return currency.ConvertOutput{}, fmt.Errorf("uh oh in use case")
 					},
 				}
 			},
@@ -125,7 +126,7 @@ func Test_Handler_GetConversion(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			h := NewHandler(tt.uc(t))
+			h := currencies.NewHandler(tt.uc(t))
 
 			req := newTestGetRequest(t, target, tt.params)
 			res := newTestGetResponse(h.GetConversion, req, target)

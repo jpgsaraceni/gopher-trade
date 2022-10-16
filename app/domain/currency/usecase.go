@@ -1,4 +1,4 @@
-package exchange
+package currency
 
 import (
 	"github.com/shopspring/decimal"
@@ -17,6 +17,15 @@ func NewUseCase(r Repository) UseCase {
 	}
 }
 
+type CreateCurrencyInput struct {
+	Code    vos.CurrencyCode
+	USDRate decimal.Decimal
+}
+
+type CreateCurrencyOutput struct {
+	Currency entities.Currency
+}
+
 type ConvertInput struct {
 	From       vos.CurrencyCode
 	To         vos.CurrencyCode
@@ -25,14 +34,4 @@ type ConvertInput struct {
 
 type ConvertOutput struct {
 	ConvertedAmount decimal.Decimal
-}
-
-type CreateExchangeInput struct {
-	From vos.CurrencyCode
-	To   vos.CurrencyCode
-	Rate decimal.Decimal
-}
-
-type CreateExchangeOutput struct {
-	Exc entities.Exchange
 }

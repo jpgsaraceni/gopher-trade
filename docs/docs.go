@@ -24,6 +24,58 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/currencies": {
+            "post": {
+                "description": "Creates an exchange rate from a specified currency to USD.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Create a new currency exchange rate",
+                "parameters": [
+                    {
+                        "description": "Currency Info",
+                        "name": "currency",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/currencies.CreateCurrencyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/currencies.CreateCurrencyResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorPayload"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorPayload"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorPayload"
+                        }
+                    }
+                }
+            }
+        },
         "/exchanges": {
             "get": {
                 "consumes": [
@@ -63,7 +115,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/exchanges.GetConversionResponse"
+                            "$ref": "#/definitions/currencies.GetConversionResponse"
                         }
                     },
                     "400": {
@@ -85,105 +137,47 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "Creates an exchange rate from and to specified currencies.\nNote that from-to currency pairs must be unique.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Exchange"
-                ],
-                "summary": "Create a new exchange rate",
-                "parameters": [
-                    {
-                        "description": "Exchange Info",
-                        "name": "exchange",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/exchanges.CreateExchangeRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/exchanges.CreateExchangeResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorPayload"
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorPayload"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorPayload"
-                        }
-                    }
-                }
             }
         }
     },
     "definitions": {
-        "exchanges.CreateExchangeRequest": {
+        "currencies.CreateCurrencyRequest": {
             "type": "object",
             "properties": {
-                "from": {
+                "code": {
                     "type": "string",
-                    "example": "USD"
+                    "example": "FAKEMONEY"
                 },
-                "rate": {
+                "usd_rate": {
                     "type": "string",
-                    "example": "2.132"
-                },
-                "to": {
-                    "type": "string",
-                    "example": "COOLCOIN"
+                    "example": "200.132"
                 }
             }
         },
-        "exchanges.CreateExchangeResponse": {
+        "currencies.CreateCurrencyResponse": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "from": {
+                "code": {
                     "type": "string",
                     "example": "USD"
+                },
+                "created_at": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string",
                     "example": "2171f348-54b4-4a1e-8643-0972a3daf400"
                 },
-                "rate": {
-                    "type": "string",
-                    "example": "2.132"
-                },
-                "to": {
-                    "type": "string",
-                    "example": "COOLCOIN"
-                },
                 "updated_at": {
                     "type": "string"
+                },
+                "usd_rate": {
+                    "type": "string",
+                    "example": "2.132"
                 }
             }
         },
-        "exchanges.GetConversionResponse": {
+        "currencies.GetConversionResponse": {
             "type": "object",
             "properties": {
                 "converted_amount": {
