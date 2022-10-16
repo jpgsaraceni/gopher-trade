@@ -1,51 +1,56 @@
-package exchange
+package currencypg
 
 import (
 	"context"
-	"errors"
 
-	"github.com/jackc/pgx/v4"
-
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
 	"github.com/jpgsaraceni/gopher-trade/app/domain/entities"
-	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
 	"github.com/jpgsaraceni/gopher-trade/app/domain/vos"
 	"github.com/jpgsaraceni/gopher-trade/extensions"
 )
 
-func (r Repository) GetExchangeByCurrencies(ctx context.Context, from, to vos.CurrencyCode) (entities.Exchange, error) {
-	const operation = "Repository.Exchange.GetExchangeByCurrencies"
+func (r Repository) GetCurrenciesByCode(
+	ctx context.Context,
+	codes ...vos.CurrencyCode,
+) (map[vos.CurrencyCode]entities.Currency, error) {
+	const operation = "Repository.Currency.GetCurrenciesByCode"
 
 	const query = `
 		SELECT
 			id,
-			"from",
-			"to",
+			code,
 			created_at,
 			updated_at,
-			rate
+			usd_rate
 		FROM
-			exchanges
-		WHERE "from" = $1 AND "to" = $2;
+			currencies
+		WHERE code = ANY($1);
 	`
-	var exc entities.Exchange
+	currencies := make(map[vos.CurrencyCode]entities.Currency, 0)
 
-	err := r.pool.QueryRow(ctx, query, from.String(), to.String()).Scan(
-		&exc.ID,
-		&exc.From,
-		&exc.To,
-		&exc.CreatedAt,
-		&exc.UpdatedAt,
-		&exc.Rate,
-	)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return entities.Exchange{}, extensions.ErrStack(operation, exchange.ErrNotFound)
+	rows, err := r.pool.Query(ctx, query, vos.ListOfCodesToString(codes...))
+	for rows.Next() {
+		var cur entities.Currency
+		err = rows.Scan(
+			&cur.ID,
+			&cur.Code,
+			&cur.CreatedAt,
+			&cur.UpdatedAt,
+			&cur.USDRate,
+		)
+		if err != nil {
+			return nil, extensions.ErrStack(operation, err)
 		}
-
-		return entities.Exchange{}, extensions.ErrStack(operation, err)
+		cur.CreatedAt = cur.CreatedAt.UTC()
+		cur.UpdatedAt = cur.UpdatedAt.UTC()
+		currencies[cur.Code] = cur
 	}
-	exc.CreatedAt = exc.CreatedAt.UTC()
-	exc.UpdatedAt = exc.UpdatedAt.UTC()
+	if len(currencies) != len(codes) {
+		return nil, extensions.ErrStack(operation, currency.ErrNotFound)
+	}
+	if err != nil {
+		return nil, extensions.ErrStack(operation, err)
+	}
 
-	return exc, nil
+	return currencies, nil
 }

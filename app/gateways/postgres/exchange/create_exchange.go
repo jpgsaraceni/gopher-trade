@@ -1,4 +1,4 @@
-package exchange
+package currencypg
 
 import (
 	"context"
@@ -6,42 +6,40 @@ import (
 
 	"github.com/jackc/pgconn"
 
+	"github.com/jpgsaraceni/gopher-trade/app/domain/currency"
 	"github.com/jpgsaraceni/gopher-trade/app/domain/entities"
-	"github.com/jpgsaraceni/gopher-trade/app/domain/exchange"
 	"github.com/jpgsaraceni/gopher-trade/extensions"
 )
 
-func (r Repository) CreateExchange(ctx context.Context, exc entities.Exchange) error {
-	const operation = "Repository.Exchange.CreateExchange"
+func (r Repository) CreateCurrency(ctx context.Context, cur entities.Currency) error {
+	const operation = "Repository.Currency.CreateCurrency"
 
 	const query = `
-		INSERT INTO exchanges (
+		INSERT INTO currencies (
 			id,
-			"from",
-			"to",
+			code,
 			created_at,
 			updated_at,
-			rate
+			usd_rate
 		)
-		VALUES ($1, $2, $3, $4, $5, $6);
+		VALUES ($1, $2, $3, $4, $5);
 	`
 
 	_, err := r.pool.Exec(
 		ctx,
 		query,
-		exc.ID,
-		exc.From.String(),
-		exc.To.String(),
-		exc.CreatedAt.UTC(),
-		exc.UpdatedAt.UTC(),
-		exc.Rate,
+		cur.ID,
+		cur.Code.String(),
+		cur.CreatedAt.UTC(),
+		cur.UpdatedAt.UTC(),
+		cur.USDRate,
 	)
 	if err != nil {
 		var pgErr *pgconn.PgError
 
 		if errors.As(err, &pgErr) {
-			if pgErr.SQLState() == uniqueKeyViolationCode && pgErr.ConstraintName == fromToDBConstraint {
-				return extensions.ErrStack(operation, exchange.ErrConflict)
+			if pgErr.SQLState() == uniqueKeyViolationCode && pgErr.ConstraintName == currenciesCodeConstraint {
+				return extensions.ErrStack(operation, currency.ErrConflict)
 			}
 		}
 
