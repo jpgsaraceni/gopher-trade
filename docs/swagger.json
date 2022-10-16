@@ -67,7 +67,7 @@
                 }
             }
         },
-        "/exchanges": {
+        "/currencies/conversion": {
             "get": {
                 "consumes": [
                     "application/json"

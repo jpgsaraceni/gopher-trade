@@ -82,7 +82,7 @@ paths:
       summary: Create a new currency exchange rate
       tags:
       - Currency
-  /exchanges:
+  /currencies/conversion:
     get:
       consumes:
       - application/json

@@ -76,7 +76,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/exchanges": {
+        "/currencies/conversion": {
             "get": {
                 "consumes": [
                     "application/json"
