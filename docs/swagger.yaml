@@ -1,36 +1,61 @@
 definitions:
-  exchanges.CreateExchangeRequest:
+  app_gateways_api_handlers_currencies.CreateCurrencyRequest:
     properties:
-      from:
-        example: USD
+      code:
+        example: FAKEMONEY
         type: string
-      rate:
-        example: "2.132"
-        type: string
-      to:
-        example: COOLCOIN
+      usd_rate:
+        example: "200.132"
         type: string
     type: object
-  exchanges.CreateExchangeResponse:
+  app_gateways_api_handlers_currencies.CreateCurrencyResponse:
     properties:
-      created_at:
-        type: string
-      from:
+      code:
         example: USD
+        type: string
+      created_at:
         type: string
       id:
         example: 2171f348-54b4-4a1e-8643-0972a3daf400
         type: string
-      rate:
+      updated_at:
+        type: string
+      usd_rate:
         example: "2.132"
         type: string
-      to:
-        example: COOLCOIN
+    type: object
+  app_gateways_api_handlers_currencies.GetConversionResponse:
+    properties:
+      converted_amount:
+        example: "23.431"
+        type: string
+    type: object
+  app_gateways_api_handlers_exchanges.CreateCurrencyRequest:
+    properties:
+      code:
+        example: FAKEMONEY
+        type: string
+      usd_rate:
+        example: "200.132"
+        type: string
+    type: object
+  app_gateways_api_handlers_exchanges.CreateCurrencyResponse:
+    properties:
+      code:
+        example: USD
+        type: string
+      created_at:
+        type: string
+      id:
+        example: 2171f348-54b4-4a1e-8643-0972a3daf400
         type: string
       updated_at:
         type: string
+      usd_rate:
+        example: "2.132"
+        type: string
     type: object
-  exchanges.GetConversionResponse:
+  app_gateways_api_handlers_exchanges.GetConversionResponse:
     properties:
       converted_amount:
         example: "23.431"
@@ -54,6 +79,40 @@ info:
   title: Gopher Trade API
   version: 0.1.0
 paths:
+  /currencies:
+    post:
+      consumes:
+      - application/json
+      description: Creates an exchange rate from a specified currency to USD.
+      parameters:
+      - description: Currency Info
+        in: body
+        name: currency
+        required: true
+        schema:
+          $ref: '#/definitions/app_gateways_api_handlers_exchanges.CreateCurrencyRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/app_gateways_api_handlers_exchanges.CreateCurrencyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+      summary: Create a new currency exchange rate
+      tags:
+      - Currency
   /exchanges:
     get:
       consumes:
@@ -80,7 +139,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/exchanges.GetConversionResponse'
+            $ref: '#/definitions/app_gateways_api_handlers_exchanges.GetConversionResponse'
         "400":
           description: Bad Request
           schema:
@@ -94,41 +153,6 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorPayload'
       summary: Get a conversion for an existent rate
-      tags:
-      - Exchange
-    post:
-      consumes:
-      - application/json
-      description: |-
-        Creates an exchange rate from and to specified currencies.
-        Note that from-to currency pairs must be unique.
-      parameters:
-      - description: Exchange Info
-        in: body
-        name: exchange
-        required: true
-        schema:
-          $ref: '#/definitions/exchanges.CreateExchangeRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/exchanges.CreateExchangeResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorPayload'
-        "409":
-          description: Conflict
-          schema:
-            $ref: '#/definitions/responses.ErrorPayload'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorPayload'
-      summary: Create a new exchange rate
       tags:
       - Exchange
 swagger: "2.0"
