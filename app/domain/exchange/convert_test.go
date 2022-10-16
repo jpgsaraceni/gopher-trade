@@ -49,7 +49,7 @@ func Test_UseCase_Convert(t *testing.T) {
 			},
 			want: want{
 				output: currency.ConvertOutput{
-					decimal.NewFromFloat(1.5815370196813496),
+					ConvertedAmount: decimal.NewFromFloat(1.5815370196813496),
 				},
 			},
 		},
