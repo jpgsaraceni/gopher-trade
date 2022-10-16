@@ -14,14 +14,11 @@ type Response struct {
 }
 
 func BadRequest(w http.ResponseWriter, payload ErrorPayload, err error) {
-	r := Response{
-		Writer:  w,
-		Status:  http.StatusBadRequest,
-		Error:   err,
-		Payload: payload,
-	}
+	errResponse(w, payload, err, http.StatusBadRequest).sendJSON()
+}
 
-	r.sendJSON()
+func Conflict(w http.ResponseWriter, payload ErrorPayload, err error) {
+	errResponse(w, payload, err, http.StatusConflict).sendJSON()
 }
 
 func InternalServerError(w http.ResponseWriter, err error) {
@@ -43,6 +40,15 @@ func Created(w http.ResponseWriter, payload interface{}) {
 	}
 
 	r.sendJSON()
+}
+
+func errResponse(w http.ResponseWriter, payload ErrorPayload, err error, status int) Response {
+	return Response{
+		Writer:  w,
+		Error:   err,
+		Status:  status,
+		Payload: payload,
+	}
 }
 
 func (r Response) sendJSON() {

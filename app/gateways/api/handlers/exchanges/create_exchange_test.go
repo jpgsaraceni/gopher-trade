@@ -135,6 +135,26 @@ func Test_Handler_CreateExchange(t *testing.T) {
 			wantStatus: http.StatusBadRequest,
 		},
 		{
+			name: "should return 409 when rate already exists for from-to pair",
+			uc: &domain.ExchangeMock{
+				CreateExchangeFunc: func(
+					ctx context.Context,
+					input exchange.CreateExchangeInput,
+				) (exchange.CreateExchangeOutput, error) {
+					return exchange.CreateExchangeOutput{}, fmt.Errorf("repo error: %w", exchange.ErrConflict)
+				},
+			},
+			args: CreateExchangeRequest{
+				From: "some",
+				To:   "other",
+				Rate: "100",
+			},
+			wantBody: json.RawMessage(`{
+				"error":"Rate for from-to currency pair already exists."
+			}`),
+			wantStatus: http.StatusConflict,
+		},
+		{
 			name: "should return 500 when something goes wrong in use case",
 			uc: &domain.ExchangeMock{
 				CreateExchangeFunc: func(
