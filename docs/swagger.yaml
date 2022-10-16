@@ -1,0 +1,83 @@
+definitions:
+  exchanges.CreateExchangeRequest:
+    properties:
+      from:
+        example: USD
+        type: string
+      rate:
+        example: "2.132"
+        type: string
+      to:
+        example: COOLCOIN
+        type: string
+    type: object
+  exchanges.CreateExchangeResponse:
+    properties:
+      created_at:
+        type: string
+      from:
+        example: USD
+        type: string
+      id:
+        example: 2171f348-54b4-4a1e-8643-0972a3daf400
+        type: string
+      rate:
+        example: "2.132"
+        type: string
+      to:
+        example: COOLCOIN
+        type: string
+      updated_at:
+        type: string
+    type: object
+  responses.ErrorPayload:
+    properties:
+      error:
+        example: Message for some error
+        type: string
+    type: object
+info:
+  contact:
+    email: jpgome@id.uff.br
+    name: João Saraceni
+    url: https://www.linkedin.com/in/joaosaraceni/
+  description: Gopher Trade is an api to get monetary exchange values.
+  license:
+    name: MIT
+    url: https://github.com/jpgsaraceni/gopher-trade/blob/main/LICENSE
+  title: Gopher Trade API
+  version: 0.1.0
+paths:
+  /exchanges:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Creates an exchange rate from and to specified currencies.
+        Note that from-to currency pairs must be unique.
+      parameters:
+      - description: Exchange Info
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/exchanges.CreateExchangeRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/exchanges.CreateExchangeResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+      summary: Create a new exchange rate
+      tags:
+      - Exchange
+swagger: "2.0"
