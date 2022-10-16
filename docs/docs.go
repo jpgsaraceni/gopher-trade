@@ -61,6 +61,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/responses.ErrorPayload"
                         }
                     },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorPayload"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
