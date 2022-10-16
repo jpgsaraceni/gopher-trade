@@ -30,6 +30,7 @@ generate: clean-generated install-tools
 	@echo "Running go generate"
 	go generate ./...
 	@echo "Generating Swagger"
+	swag init -g /cmd/api/main.go
 
 .PHONY: api
 api:
