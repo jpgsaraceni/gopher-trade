@@ -31,7 +31,7 @@ func main() {
 	// connect to db
 	pgPool, err := postgres.ConnectPool(
 		ctx,
-		"postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable",
+		"postgres://postgres:postgres@gopher_db:5432/postgres?sslmode=disable",
 	) // TODO: move to config
 	if err != nil {
 		log.Panic(err)
