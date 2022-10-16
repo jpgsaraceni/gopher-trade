@@ -78,12 +78,12 @@ func Test_Handler_GetConversion(t *testing.T) {
 				"amount": "NaN",
 			},
 			wantBody: json.RawMessage(`{
-				"error":"Invalid rate. Must be an integer or point separated decimal number."
+				"error":"Invalid amount. Must be an integer or point separated decimal number."
 			}`),
 			wantStatus: http.StatusBadRequest,
 		},
 		{
-			name: "should return 404 when from-to currencie pair does not exist",
+			name: "should return 404 when currencies pair does not exist",
 			uc: func(t *testing.T) domain.Currency {
 				return &domain.CurrencyMock{
 					ConvertFunc: func(ctx context.Context, input currency.ConvertInput) (currency.ConvertOutput, error) {
@@ -97,7 +97,7 @@ func Test_Handler_GetConversion(t *testing.T) {
 				"amount": "1.23",
 			},
 			wantBody: json.RawMessage(`{
-				"error":"No conversion found for from-to currencies pair."
+				"error":"Currency pair not found."
 			}`),
 			wantStatus: http.StatusNotFound,
 		},

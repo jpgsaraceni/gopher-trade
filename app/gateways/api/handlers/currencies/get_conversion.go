@@ -45,7 +45,7 @@ func (h Handler) GetConversion(w http.ResponseWriter, r *http.Request) {
 	}
 	amount, err := decimal.NewFromString(amountParam)
 	if err != nil {
-		responses.BadRequest(w, responses.ErrInvalidRate, err)
+		responses.BadRequest(w, responses.ErrInvalidAmount, err)
 
 		return
 	}
@@ -63,7 +63,7 @@ func (h Handler) GetConversion(w http.ResponseWriter, r *http.Request) {
 		err = extensions.ErrStack(operation, err)
 
 		if errors.Is(err, currency.ErrNotFound) {
-			responses.NotFound(w, responses.ErrNotFoundExchange, err)
+			responses.NotFound(w, responses.ErrCurrenciesNotFound, err)
 
 			return
 		}
