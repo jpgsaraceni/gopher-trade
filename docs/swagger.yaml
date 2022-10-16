@@ -1,5 +1,5 @@
 definitions:
-  app_gateways_api_handlers_currencies.CreateCurrencyRequest:
+  currencies.CreateCurrencyRequest:
     properties:
       code:
         example: FAKEMONEY
@@ -8,7 +8,7 @@ definitions:
         example: "200.132"
         type: string
     type: object
-  app_gateways_api_handlers_currencies.CreateCurrencyResponse:
+  currencies.CreateCurrencyResponse:
     properties:
       code:
         example: USD
@@ -24,38 +24,7 @@ definitions:
         example: "2.132"
         type: string
     type: object
-  app_gateways_api_handlers_currencies.GetConversionResponse:
-    properties:
-      converted_amount:
-        example: "23.431"
-        type: string
-    type: object
-  app_gateways_api_handlers_exchanges.CreateCurrencyRequest:
-    properties:
-      code:
-        example: FAKEMONEY
-        type: string
-      usd_rate:
-        example: "200.132"
-        type: string
-    type: object
-  app_gateways_api_handlers_exchanges.CreateCurrencyResponse:
-    properties:
-      code:
-        example: USD
-        type: string
-      created_at:
-        type: string
-      id:
-        example: 2171f348-54b4-4a1e-8643-0972a3daf400
-        type: string
-      updated_at:
-        type: string
-      usd_rate:
-        example: "2.132"
-        type: string
-    type: object
-  app_gateways_api_handlers_exchanges.GetConversionResponse:
+  currencies.GetConversionResponse:
     properties:
       converted_amount:
         example: "23.431"
@@ -90,14 +59,14 @@ paths:
         name: currency
         required: true
         schema:
-          $ref: '#/definitions/app_gateways_api_handlers_exchanges.CreateCurrencyRequest'
+          $ref: '#/definitions/currencies.CreateCurrencyRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/app_gateways_api_handlers_exchanges.CreateCurrencyResponse'
+            $ref: '#/definitions/currencies.CreateCurrencyResponse'
         "400":
           description: Bad Request
           schema:
@@ -139,7 +108,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/app_gateways_api_handlers_exchanges.GetConversionResponse'
+            $ref: '#/definitions/currencies.GetConversionResponse'
         "400":
           description: Bad Request
           schema:

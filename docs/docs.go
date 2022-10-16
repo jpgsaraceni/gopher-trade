@@ -44,7 +44,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/app_gateways_api_handlers_exchanges.CreateCurrencyRequest"
+                            "$ref": "#/definitions/currencies.CreateCurrencyRequest"
                         }
                     }
                 ],
@@ -52,7 +52,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/app_gateways_api_handlers_exchanges.CreateCurrencyResponse"
+                            "$ref": "#/definitions/currencies.CreateCurrencyResponse"
                         }
                     },
                     "400": {
@@ -115,7 +115,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app_gateways_api_handlers_exchanges.GetConversionResponse"
+                            "$ref": "#/definitions/currencies.GetConversionResponse"
                         }
                     },
                     "400": {
@@ -141,7 +141,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "app_gateways_api_handlers_currencies.CreateCurrencyRequest": {
+        "currencies.CreateCurrencyRequest": {
             "type": "object",
             "properties": {
                 "code": {
@@ -154,7 +154,7 @@ const docTemplate = `{
                 }
             }
         },
-        "app_gateways_api_handlers_currencies.CreateCurrencyResponse": {
+        "currencies.CreateCurrencyResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -177,52 +177,7 @@ const docTemplate = `{
                 }
             }
         },
-        "app_gateways_api_handlers_currencies.GetConversionResponse": {
-            "type": "object",
-            "properties": {
-                "converted_amount": {
-                    "type": "string",
-                    "example": "23.431"
-                }
-            }
-        },
-        "app_gateways_api_handlers_exchanges.CreateCurrencyRequest": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string",
-                    "example": "FAKEMONEY"
-                },
-                "usd_rate": {
-                    "type": "string",
-                    "example": "200.132"
-                }
-            }
-        },
-        "app_gateways_api_handlers_exchanges.CreateCurrencyResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string",
-                    "example": "USD"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "2171f348-54b4-4a1e-8643-0972a3daf400"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "usd_rate": {
-                    "type": "string",
-                    "example": "2.132"
-                }
-            }
-        },
-        "app_gateways_api_handlers_exchanges.GetConversionResponse": {
+        "currencies.GetConversionResponse": {
             "type": "object",
             "properties": {
                 "converted_amount": {
