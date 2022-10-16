@@ -10,8 +10,9 @@ import (
 	"testing"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jpgsaraceni/gopher-trade/app/gateways/api/handlers/currencies"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/jpgsaraceni/gopher-trade/app/gateways/api/handlers/currencies"
 )
 
 var testContext = context.Background()
