@@ -120,6 +120,25 @@ func Test_Handler_GetConversion(t *testing.T) {
 			}`),
 			wantStatus: http.StatusInternalServerError,
 		},
+		{
+			name: "should return 502 when external API returns error",
+			uc: func(t *testing.T) domain.Currency {
+				return &domain.CurrencyMock{
+					ConvertFunc: func(ctx context.Context, input currency.ConvertInput) (currency.ConvertOutput, error) {
+						return currency.ConvertOutput{}, currency.ErrCurrencyAPI
+					},
+				}
+			},
+			params: map[string]string{
+				"from":   "USD",
+				"to":     "BRL",
+				"amount": "1.23",
+			},
+			wantBody: json.RawMessage(`{
+				"error":"External API not available."
+			}`),
+			wantStatus: http.StatusBadGateway,
+		},
 	}
 
 	for _, tt := range tests {
