@@ -121,6 +121,10 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/responses.ErrorPayload'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
       summary: Get a conversion for an existent rate
       tags:
       - Exchange

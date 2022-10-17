@@ -29,6 +29,10 @@ func InternalServerError(w http.ResponseWriter, err error) {
 	errResponse(w, ErrInternalServerError, err, http.StatusInternalServerError).sendJSON()
 }
 
+func BadGateway(w http.ResponseWriter, payload ErrorPayload, err error) {
+	errResponse(w, payload, err, http.StatusBadGateway).sendJSON()
+}
+
 func Created(w http.ResponseWriter, payload any) {
 	successResponse(w, payload, http.StatusCreated).sendJSON()
 }

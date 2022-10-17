@@ -35,10 +35,10 @@ func (c *Currency) UpdateCurrency(r decimal.Decimal) {
 
 // Convert converts amount in original currency to dollars then to target currency
 // using their USD rates.
-func Convert(original, target Currency, amount decimal.Decimal) decimal.Decimal {
-	decimal.DivisionPrecision = 5 // TODO: move to env
-	fromInUSD := amount.Mul(original.USDRate)
-	result := fromInUSD.Div(target.USDRate)
+func Convert(originalRate, targetRate, amount decimal.Decimal) decimal.Decimal {
+	const decimalPlaces = 5 // TODO: move to env
+	originalAmountInUSD := amount.Div(originalRate)
+	originalAmountInTarget := originalAmountInUSD.Mul(targetRate).Round(decimalPlaces)
 
-	return result
+	return originalAmountInTarget
 }

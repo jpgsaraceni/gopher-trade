@@ -30,6 +30,7 @@ var errMissingParams = errors.New("missing required query params")
 // @Failure 400 {object} responses.ErrorPayload
 // @Failure 404 {object} responses.ErrorPayload
 // @Failure 500 {object} responses.ErrorPayload
+// @Failure 502 {object} responses.ErrorPayload
 // @Router /currencies/conversion [get]
 func (h Handler) GetConversion(w http.ResponseWriter, r *http.Request) {
 	const operation = "Handler.Currencies.GetExchange"
@@ -51,6 +52,11 @@ func (h Handler) GetConversion(w http.ResponseWriter, r *http.Request) {
 	}
 	from := vos.CurrencyCode(strings.ToUpper(fromParam))
 	to := vos.CurrencyCode(strings.ToUpper(toParam))
+	if from == to {
+		responses.OK(w, currency.ConvertOutput{
+			ConvertedAmount: amount,
+		})
+	}
 
 	input := currency.ConvertInput{
 		From:       from,
@@ -62,13 +68,14 @@ func (h Handler) GetConversion(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err = extensions.ErrStack(operation, err)
 
-		if errors.Is(err, currency.ErrNotFound) {
+		switch {
+		case errors.Is(err, currency.ErrNotFound):
 			responses.NotFound(w, responses.ErrCurrenciesNotFound, err)
-
-			return
+		case errors.Is(err, currency.ErrCurrencyAPI):
+			responses.BadGateway(w, responses.ErrCurrencyAPI, err)
+		default:
+			responses.InternalServerError(w, err)
 		}
-
-		responses.InternalServerError(w, err)
 
 		return
 	}

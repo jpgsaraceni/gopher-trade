@@ -28,11 +28,14 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 		{
 			name: "should create currency",
 			fields: func(t *testing.T) currency.UseCase {
-				return currency.NewUseCase(&currency.RepositoryMock{
-					CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
-						return nil
+				return currency.NewUseCase(
+					&currency.RepositoryMock{
+						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
+							return nil
+						},
 					},
-				})
+					&currency.ClientMock{},
+				)
 			},
 			input: currency.CreateCurrencyInput{
 				Code:    "TEST",
@@ -51,11 +54,14 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 		{
 			name: "should return error when something goes wrong in repository",
 			fields: func(t *testing.T) currency.UseCase {
-				return currency.NewUseCase(&currency.RepositoryMock{
-					CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
-						return testErrRepository
+				return currency.NewUseCase(
+					&currency.RepositoryMock{
+						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
+							return testErrRepository
+						},
 					},
-				})
+					&currency.ClientMock{},
+				)
 			},
 			input: currency.CreateCurrencyInput{},
 			want: want{

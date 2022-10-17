@@ -24,8 +24,8 @@ var _ Repository = &RepositoryMock{}
 // 			CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
 // 				panic("mock out the CreateCurrency method")
 // 			},
-// 			GetCurrenciesByCodeFunc: func(ctx context.Context, code ...vos.CurrencyCode) (map[vos.CurrencyCode]entities.Currency, error) {
-// 				panic("mock out the GetCurrenciesByCode method")
+// 			GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
+// 				panic("mock out the GetCurrencyByCode method")
 // 			},
 // 		}
 //
@@ -37,8 +37,8 @@ type RepositoryMock struct {
 	// CreateCurrencyFunc mocks the CreateCurrency method.
 	CreateCurrencyFunc func(ctx context.Context, cur entities.Currency) error
 
-	// GetCurrenciesByCodeFunc mocks the GetCurrenciesByCode method.
-	GetCurrenciesByCodeFunc func(ctx context.Context, code ...vos.CurrencyCode) (map[vos.CurrencyCode]entities.Currency, error)
+	// GetCurrencyByCodeFunc mocks the GetCurrencyByCode method.
+	GetCurrencyByCodeFunc func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -49,16 +49,16 @@ type RepositoryMock struct {
 			// Cur is the cur argument value.
 			Cur entities.Currency
 		}
-		// GetCurrenciesByCode holds details about calls to the GetCurrenciesByCode method.
-		GetCurrenciesByCode []struct {
+		// GetCurrencyByCode holds details about calls to the GetCurrencyByCode method.
+		GetCurrencyByCode []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Code is the code argument value.
-			Code []vos.CurrencyCode
+			Code vos.CurrencyCode
 		}
 	}
-	lockCreateCurrency      sync.RWMutex
-	lockGetCurrenciesByCode sync.RWMutex
+	lockCreateCurrency    sync.RWMutex
+	lockGetCurrencyByCode sync.RWMutex
 }
 
 // CreateCurrency calls CreateCurrencyFunc.
@@ -96,37 +96,37 @@ func (mock *RepositoryMock) CreateCurrencyCalls() []struct {
 	return calls
 }
 
-// GetCurrenciesByCode calls GetCurrenciesByCodeFunc.
-func (mock *RepositoryMock) GetCurrenciesByCode(ctx context.Context, code ...vos.CurrencyCode) (map[vos.CurrencyCode]entities.Currency, error) {
-	if mock.GetCurrenciesByCodeFunc == nil {
-		panic("RepositoryMock.GetCurrenciesByCodeFunc: method is nil but Repository.GetCurrenciesByCode was just called")
+// GetCurrencyByCode calls GetCurrencyByCodeFunc.
+func (mock *RepositoryMock) GetCurrencyByCode(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
+	if mock.GetCurrencyByCodeFunc == nil {
+		panic("RepositoryMock.GetCurrencyByCodeFunc: method is nil but Repository.GetCurrencyByCode was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
-		Code []vos.CurrencyCode
+		Code vos.CurrencyCode
 	}{
 		Ctx:  ctx,
 		Code: code,
 	}
-	mock.lockGetCurrenciesByCode.Lock()
-	mock.calls.GetCurrenciesByCode = append(mock.calls.GetCurrenciesByCode, callInfo)
-	mock.lockGetCurrenciesByCode.Unlock()
-	return mock.GetCurrenciesByCodeFunc(ctx, code...)
+	mock.lockGetCurrencyByCode.Lock()
+	mock.calls.GetCurrencyByCode = append(mock.calls.GetCurrencyByCode, callInfo)
+	mock.lockGetCurrencyByCode.Unlock()
+	return mock.GetCurrencyByCodeFunc(ctx, code)
 }
 
-// GetCurrenciesByCodeCalls gets all the calls that were made to GetCurrenciesByCode.
+// GetCurrencyByCodeCalls gets all the calls that were made to GetCurrencyByCode.
 // Check the length with:
-//     len(mockedRepository.GetCurrenciesByCodeCalls())
-func (mock *RepositoryMock) GetCurrenciesByCodeCalls() []struct {
+//     len(mockedRepository.GetCurrencyByCodeCalls())
+func (mock *RepositoryMock) GetCurrencyByCodeCalls() []struct {
 	Ctx  context.Context
-	Code []vos.CurrencyCode
+	Code vos.CurrencyCode
 } {
 	var calls []struct {
 		Ctx  context.Context
-		Code []vos.CurrencyCode
+		Code vos.CurrencyCode
 	}
-	mock.lockGetCurrenciesByCode.RLock()
-	calls = mock.calls.GetCurrenciesByCode
-	mock.lockGetCurrenciesByCode.RUnlock()
+	mock.lockGetCurrencyByCode.RLock()
+	calls = mock.calls.GetCurrencyByCode
+	mock.lockGetCurrencyByCode.RUnlock()
 	return calls
 }
