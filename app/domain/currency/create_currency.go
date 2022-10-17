@@ -9,6 +9,9 @@ import (
 
 func (uc UseCase) CreateCurrency(ctx context.Context, input CreateCurrencyInput) (CreateCurrencyOutput, error) {
 	const operation = "UseCase.Currency.CreateCurrency"
+	if entities.IsDefaultRate(input.Code) {
+		return CreateCurrencyOutput{}, extensions.ErrStack(operation, ErrDefaultRate)
+	}
 
 	cur := entities.NewCurrency(input.Code, input.USDRate)
 	err := uc.Repo.CreateCurrency(ctx, cur)

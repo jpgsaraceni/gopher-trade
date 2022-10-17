@@ -37,7 +37,7 @@ var errMissingFields = errors.New("missing required fields")
 // @Param currency body CreateCurrencyRequest true "Currency Info"
 // @Success 201 {object} CreateCurrencyResponse
 // @Failure 400 {object} responses.ErrorPayload
-// @Failure 409 {object} responses.ErrorPayload
+// @Failure 422 {object} responses.ErrorPayload
 // @Failure 500 {object} responses.ErrorPayload
 // @Router /currencies [post]
 func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
@@ -74,10 +74,11 @@ func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err = extensions.ErrStack(operation, err)
 
-		if errors.Is(err, currency.ErrConflict) {
-			responses.Conflict(w, responses.ErrConflictCode, err)
-
-			return
+		switch {
+		case errors.Is(err, currency.ErrDefaultRate):
+			responses.UnprocessableEntity(w, responses.ErrCreateDefaultRate, err)
+		default:
+			responses.InternalServerError(w, err)
 		}
 
 		responses.InternalServerError(w, err)

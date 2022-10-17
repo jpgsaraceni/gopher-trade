@@ -125,23 +125,20 @@ func Test_Handler_CreateCurrency(t *testing.T) {
 			wantStatus: http.StatusBadRequest,
 		},
 		{
-			name: "should return 409 when rate already exists for from-to pair",
+			name: "should return 422 when rate is a default rate",
 			uc: &domain.CurrencyMock{
-				CreateCurrencyFunc: func(
-					ctx context.Context,
-					input currency.CreateCurrencyInput,
-				) (currency.CreateCurrencyOutput, error) {
-					return currency.CreateCurrencyOutput{}, fmt.Errorf("repo error: %w", currency.ErrConflict)
+				CreateCurrencyFunc: func(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error) { //nolint
+					return currency.CreateCurrencyOutput{}, currency.ErrDefaultRate
 				},
 			},
 			args: currencies.CreateCurrencyRequest{
-				Code:    "some",
-				USDRate: "100",
+				Code:    "BRL",
+				USDRate: "0.41",
 			},
 			wantBody: json.RawMessage(`{
-				"error":"Rate for currency already exists."
+				"error":"Code belongs to a default rate."
 			}`),
-			wantStatus: http.StatusConflict,
+			wantStatus: http.StatusUnprocessableEntity,
 		},
 		{
 			name: "should return 500 when something goes wrong in use case",

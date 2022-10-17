@@ -30,11 +30,6 @@ func NewCurrency(code vos.CurrencyCode, usdRate decimal.Decimal) Currency {
 	}
 }
 
-func (c *Currency) UpdateCurrency(r decimal.Decimal) {
-	c.UpdatedAt = time.Now().UTC()
-	c.USDRate = r
-}
-
 // Convert converts amount in original currency to dollars then to target currency
 // using their USD rates.
 func Convert(originalRate, targetRate, amount decimal.Decimal) decimal.Decimal {
@@ -43,4 +38,18 @@ func Convert(originalRate, targetRate, amount decimal.Decimal) decimal.Decimal {
 	originalAmountInTarget := originalAmountInUSD.Mul(targetRate).Round(decimalPlaces)
 
 	return originalAmountInTarget
+}
+
+func IsDefaultRate(code vos.CurrencyCode) bool {
+	defaultRates := map[vos.CurrencyCode]struct{}{
+		vos.BRL: {},
+		vos.BTC: {},
+		vos.ETH: {},
+		vos.EUR: {},
+		vos.USD: {},
+	}
+
+	_, ok := defaultRates[code]
+
+	return ok
 }

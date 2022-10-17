@@ -25,6 +25,10 @@ func Conflict(w http.ResponseWriter, payload ErrorPayload, err error) {
 	errResponse(w, payload, err, http.StatusConflict).sendJSON()
 }
 
+func UnprocessableEntity(w http.ResponseWriter, payload ErrorPayload, err error) {
+	errResponse(w, payload, err, http.StatusUnprocessableEntity).sendJSON()
+}
+
 func InternalServerError(w http.ResponseWriter, err error) {
 	errResponse(w, ErrInternalServerError, err, http.StatusInternalServerError).sendJSON()
 }
