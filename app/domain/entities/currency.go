@@ -19,11 +19,13 @@ type Currency struct {
 
 // NewCurrency generates an ID (UUID) and timestamps and returns an instance of Currency.
 func NewCurrency(code vos.CurrencyCode, usdRate decimal.Decimal) Currency {
+	now := time.Now().UTC()
+
 	return Currency{
 		ID:        uuid.NewString(),
 		Code:      code,
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
+		CreatedAt: now,
+		UpdatedAt: now,
 		USDRate:   usdRate,
 	}
 }
