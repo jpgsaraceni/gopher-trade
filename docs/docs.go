@@ -25,8 +25,8 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/currencies": {
-            "post": {
-                "description": "Creates an exchange rate from a specified currency to USD.",
+            "put": {
+                "description": "Creates an exchange rate from a specified currency to USD.\nIf an exchange rate already exists, updates it.",
                 "consumes": [
                     "application/json"
                 ],
@@ -36,7 +36,7 @@ const docTemplate = `{
                 "tags": [
                     "Currency"
                 ],
-                "summary": "Create a new currency exchange rate",
+                "summary": "Upsert currency exchange rate to usd",
                 "parameters": [
                     {
                         "description": "Currency Info",
@@ -61,8 +61,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/responses.ErrorPayload"
                         }
                     },
-                    "409": {
-                        "description": "Conflict",
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorPayload"
                         }

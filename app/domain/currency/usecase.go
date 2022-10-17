@@ -26,6 +26,7 @@ type CreateCurrencyInput struct {
 
 type CreateCurrencyOutput struct {
 	Currency entities.Currency
+	IsNew    bool
 }
 
 type ConvertInput struct {
@@ -37,3 +38,10 @@ type ConvertInput struct {
 type ConvertOutput struct {
 	ConvertedAmount decimal.Decimal
 }
+
+type UpdateCurrencyByCodeInput struct {
+	Code vos.CurrencyCode
+	Rate decimal.Decimal
+}
+
+type UpdateCurrencyByCodeOutput struct{ entities.Currency }

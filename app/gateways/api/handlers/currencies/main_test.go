@@ -17,21 +17,21 @@ import (
 
 var testContext = context.Background()
 
-func newTestPostRequest(t *testing.T, target string, body currencies.CreateCurrencyRequest) *http.Request {
+func newTestPutRequest(t *testing.T, target string, body currencies.CreateCurrencyRequest) *http.Request {
 	t.Helper()
 
 	reqPayload, err := json.Marshal(body)
 	assert.NoError(t, err)
 	reader := bytes.NewReader(reqPayload)
-	request, err := http.NewRequestWithContext(testContext, http.MethodPost, target, reader)
+	request, err := http.NewRequestWithContext(testContext, http.MethodPut, target, reader)
 	assert.NoError(t, err)
 
 	return request
 }
 
-func newTestPostResponse(h http.HandlerFunc, req *http.Request, target string) *httptest.ResponseRecorder {
+func newTestPutResponse(h http.HandlerFunc, req *http.Request, target string) *httptest.ResponseRecorder {
 	router := chi.NewRouter()
-	router.Post(target, h)
+	router.Put(target, h)
 	res := httptest.NewRecorder()
 	router.ServeHTTP(res, req)
 

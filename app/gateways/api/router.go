@@ -14,14 +14,14 @@ import (
 func NewRouter(currencyUC currency.UseCase) http.Handler {
 	corsOptions := cors.Options{
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "HEAD", "POST", "PUT", "OPTIONS"},
+		AllowedMethods: []string{"GET", "PATCH", "POST", "PUT"},
 		AllowedHeaders: []string{"X-Requested-With", "Origin", "Content-Type", "Authorization"},
 	}
 	r := chi.NewRouter()
 	r.Use(cors.Handler(corsOptions))
 
 	currencyHandler := currencies.NewHandler(currencyUC)
-	r.Post("/currencies", currencyHandler.CreateCurrency)
+	r.Put("/currencies", currencyHandler.UpsertCurrency)
 	r.Get("/currencies/conversion", currencyHandler.GetConversion)
 
 	r.Get("/swagger", func(w http.ResponseWriter, r *http.Request) {

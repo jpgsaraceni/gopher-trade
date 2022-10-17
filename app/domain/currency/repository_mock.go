@@ -21,11 +21,11 @@ var _ Repository = &RepositoryMock{}
 //
 // 		// make and configure a mocked Repository
 // 		mockedRepository := &RepositoryMock{
-// 			CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
-// 				panic("mock out the CreateCurrency method")
-// 			},
 // 			GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
 // 				panic("mock out the GetCurrencyByCode method")
+// 			},
+// 			UpsertCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
+// 				panic("mock out the UpsertCurrency method")
 // 			},
 // 		}
 //
@@ -34,21 +34,14 @@ var _ Repository = &RepositoryMock{}
 //
 // 	}
 type RepositoryMock struct {
-	// CreateCurrencyFunc mocks the CreateCurrency method.
-	CreateCurrencyFunc func(ctx context.Context, cur entities.Currency) error
-
 	// GetCurrencyByCodeFunc mocks the GetCurrencyByCode method.
 	GetCurrencyByCodeFunc func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error)
 
+	// UpsertCurrencyFunc mocks the UpsertCurrency method.
+	UpsertCurrencyFunc func(ctx context.Context, cur entities.Currency) (entities.Currency, error)
+
 	// calls tracks calls to the methods.
 	calls struct {
-		// CreateCurrency holds details about calls to the CreateCurrency method.
-		CreateCurrency []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// Cur is the cur argument value.
-			Cur entities.Currency
-		}
 		// GetCurrencyByCode holds details about calls to the GetCurrencyByCode method.
 		GetCurrencyByCode []struct {
 			// Ctx is the ctx argument value.
@@ -56,44 +49,16 @@ type RepositoryMock struct {
 			// Code is the code argument value.
 			Code vos.CurrencyCode
 		}
+		// UpsertCurrency holds details about calls to the UpsertCurrency method.
+		UpsertCurrency []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Cur is the cur argument value.
+			Cur entities.Currency
+		}
 	}
-	lockCreateCurrency    sync.RWMutex
 	lockGetCurrencyByCode sync.RWMutex
-}
-
-// CreateCurrency calls CreateCurrencyFunc.
-func (mock *RepositoryMock) CreateCurrency(ctx context.Context, cur entities.Currency) error {
-	if mock.CreateCurrencyFunc == nil {
-		panic("RepositoryMock.CreateCurrencyFunc: method is nil but Repository.CreateCurrency was just called")
-	}
-	callInfo := struct {
-		Ctx context.Context
-		Cur entities.Currency
-	}{
-		Ctx: ctx,
-		Cur: cur,
-	}
-	mock.lockCreateCurrency.Lock()
-	mock.calls.CreateCurrency = append(mock.calls.CreateCurrency, callInfo)
-	mock.lockCreateCurrency.Unlock()
-	return mock.CreateCurrencyFunc(ctx, cur)
-}
-
-// CreateCurrencyCalls gets all the calls that were made to CreateCurrency.
-// Check the length with:
-//     len(mockedRepository.CreateCurrencyCalls())
-func (mock *RepositoryMock) CreateCurrencyCalls() []struct {
-	Ctx context.Context
-	Cur entities.Currency
-} {
-	var calls []struct {
-		Ctx context.Context
-		Cur entities.Currency
-	}
-	mock.lockCreateCurrency.RLock()
-	calls = mock.calls.CreateCurrency
-	mock.lockCreateCurrency.RUnlock()
-	return calls
+	lockUpsertCurrency    sync.RWMutex
 }
 
 // GetCurrencyByCode calls GetCurrencyByCodeFunc.
@@ -128,5 +93,40 @@ func (mock *RepositoryMock) GetCurrencyByCodeCalls() []struct {
 	mock.lockGetCurrencyByCode.RLock()
 	calls = mock.calls.GetCurrencyByCode
 	mock.lockGetCurrencyByCode.RUnlock()
+	return calls
+}
+
+// UpsertCurrency calls UpsertCurrencyFunc.
+func (mock *RepositoryMock) UpsertCurrency(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
+	if mock.UpsertCurrencyFunc == nil {
+		panic("RepositoryMock.UpsertCurrencyFunc: method is nil but Repository.UpsertCurrency was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Cur entities.Currency
+	}{
+		Ctx: ctx,
+		Cur: cur,
+	}
+	mock.lockUpsertCurrency.Lock()
+	mock.calls.UpsertCurrency = append(mock.calls.UpsertCurrency, callInfo)
+	mock.lockUpsertCurrency.Unlock()
+	return mock.UpsertCurrencyFunc(ctx, cur)
+}
+
+// UpsertCurrencyCalls gets all the calls that were made to UpsertCurrency.
+// Check the length with:
+//     len(mockedRepository.UpsertCurrencyCalls())
+func (mock *RepositoryMock) UpsertCurrencyCalls() []struct {
+	Ctx context.Context
+	Cur entities.Currency
+} {
+	var calls []struct {
+		Ctx context.Context
+		Cur entities.Currency
+	}
+	mock.lockUpsertCurrency.RLock()
+	calls = mock.calls.UpsertCurrency
+	mock.lockUpsertCurrency.RUnlock()
 	return calls
 }

@@ -29,19 +29,20 @@ type CreateCurrencyResponse struct {
 
 var errMissingFields = errors.New("missing required fields")
 
-// @Summary Create a new currency exchange rate
+// @Summary Upsert currency exchange rate to usd
 // @Description Creates an exchange rate from a specified currency to USD.
+// @Description If an exchange rate already exists, updates it.
 // @Tags Currency
 // @Accept json
 // @Produce json
 // @Param currency body CreateCurrencyRequest true "Currency Info"
 // @Success 201 {object} CreateCurrencyResponse
 // @Failure 400 {object} responses.ErrorPayload
-// @Failure 409 {object} responses.ErrorPayload
+// @Failure 422 {object} responses.ErrorPayload
 // @Failure 500 {object} responses.ErrorPayload
-// @Router /currencies [post]
-func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
-	const operation = "Handler.Currencies.CreateCurrency"
+// @Router /currencies [put]
+func (h Handler) UpsertCurrency(w http.ResponseWriter, r *http.Request) {
+	const operation = "Handler.Currencies.UpsertCurrency"
 
 	var req CreateCurrencyRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -70,17 +71,16 @@ func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
 		USDRate: rate,
 	}
 
-	output, err := h.uc.CreateCurrency(r.Context(), input)
+	output, err := h.uc.UpsertCurrency(r.Context(), input)
 	if err != nil {
 		err = extensions.ErrStack(operation, err)
 
-		if errors.Is(err, currency.ErrConflict) {
-			responses.Conflict(w, responses.ErrConflictCode, err)
-
-			return
+		switch {
+		case errors.Is(err, currency.ErrDefaultRate):
+			responses.UnprocessableEntity(w, responses.ErrCreateDefaultRate, err)
+		default:
+			responses.InternalServerError(w, err)
 		}
-
-		responses.InternalServerError(w, err)
 
 		return
 	}
@@ -92,5 +92,11 @@ func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: output.Currency.UpdatedAt,
 	}
 
-	responses.Created(w, res)
+	if output.IsNew {
+		responses.Created(w, res)
+
+		return
+	}
+
+	responses.OK(w, res)
 }

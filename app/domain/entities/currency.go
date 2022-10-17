@@ -19,18 +19,15 @@ type Currency struct {
 
 // NewCurrency generates an ID (UUID) and timestamps and returns an instance of Currency.
 func NewCurrency(code vos.CurrencyCode, usdRate decimal.Decimal) Currency {
+	now := time.Now().UTC()
+
 	return Currency{
 		ID:        uuid.NewString(),
 		Code:      code,
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
+		CreatedAt: now,
+		UpdatedAt: now,
 		USDRate:   usdRate,
 	}
-}
-
-func (c *Currency) UpdateCurrency(r decimal.Decimal) {
-	c.UpdatedAt = time.Now().UTC()
-	c.USDRate = r
 }
 
 // Convert converts amount in original currency to dollars then to target currency
@@ -41,4 +38,18 @@ func Convert(originalRate, targetRate, amount decimal.Decimal) decimal.Decimal {
 	originalAmountInTarget := originalAmountInUSD.Mul(targetRate).Round(decimalPlaces)
 
 	return originalAmountInTarget
+}
+
+func IsDefaultRate(code vos.CurrencyCode) bool {
+	defaultRates := map[vos.CurrencyCode]struct{}{
+		vos.BRL: {},
+		vos.BTC: {},
+		vos.ETH: {},
+		vos.EUR: {},
+		vos.USD: {},
+	}
+
+	_, ok := defaultRates[code]
+
+	return ok
 }
