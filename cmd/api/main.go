@@ -16,6 +16,7 @@ import (
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/api"
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/postgres"
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/postgres/currencypg"
+	"github.com/jpgsaraceni/gopher-trade/app/gateways/web"
 	"github.com/jpgsaraceni/gopher-trade/docs"
 )
 
@@ -50,8 +51,9 @@ func main() {
 	defer pgPool.Close()
 
 	// inject dependencies
+	currencyClient := web.NewClient()
 	currencyRepo := currencypg.NewRepository(pgPool)
-	currencyUC := currency.NewUseCase(currencyRepo)
+	currencyUC := currency.NewUseCase(currencyRepo, currencyClient)
 
 	// build http router
 	router := api.NewRouter(currencyUC)
