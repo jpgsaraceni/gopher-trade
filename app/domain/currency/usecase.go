@@ -8,12 +8,14 @@ import (
 )
 
 type UseCase struct {
-	repo Repository
+	Repo   Repository
+	Client Client
 }
 
-func NewUseCase(r Repository) UseCase {
+func NewUseCase(r Repository, c Client) UseCase {
 	return UseCase{
-		repo: r,
+		Repo:   r,
+		Client: c,
 	}
 }
 
