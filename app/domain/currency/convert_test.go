@@ -23,48 +23,154 @@ func Test_UseCase_Convert(t *testing.T) {
 
 	tableTests := []struct {
 		name   string
-		fields func(t *testing.T) currency.Repository
+		fields func(t *testing.T) currency.UseCase
 		input  currency.ConvertInput
 		want
 	}{
 		{
-			name: "should return currencies",
-			fields: func(t *testing.T) currency.Repository {
-				return &currency.RepositoryMock{
-					GetCurrenciesByCodeFunc: func(ctx context.Context, code ...vos.CurrencyCode) (map[vos.CurrencyCode]entities.Currency, error) { //nolint
-						assert.Equal(t, "FIXT1", code[0].String())
-						assert.Equal(t, "FIXT2", code[1].String())
+			name: "should return custom currencies conversion",
+			fields: func(t *testing.T) currency.UseCase {
+				return currency.UseCase{
+					Repo: &currency.RepositoryMock{
+						GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
+							switch code { //nolint
+							case extensions.CurrencyFixtures[0].Code:
+								return extensions.CurrencyFixtures[0], nil // 1.5
+							case extensions.CurrencyFixtures[1].Code:
+								return extensions.CurrencyFixtures[1], nil // 2.134
+							default:
+								t.FailNow()
 
-						return map[vos.CurrencyCode]entities.Currency{
-							"FIXT1": extensions.CurrencyFixtures[0], // 1.5
-							"FIXT2": extensions.CurrencyFixtures[1], // 2.134
-						}, nil
+								return entities.Currency{}, nil
+							}
+						},
 					},
 				}
 			},
 			input: currency.ConvertInput{
-				From:       "FIXT1",
-				To:         "FIXT2",
+				From:       extensions.CurrencyFixtures[0].Code,
+				To:         extensions.CurrencyFixtures[1].Code,
 				FromAmount: decimal.NewFromFloat(2.25),
 			},
 			want: want{
 				output: currency.ConvertOutput{
-					ConvertedAmount: decimal.NewFromFloat(1.58154),
+					ConvertedAmount: decimal.NewFromFloat(3.20100),
+				},
+			},
+		},
+		{
+			name: "should return default currencies conversion",
+			fields: func(t *testing.T) currency.UseCase {
+				return currency.UseCase{
+					Client: &currency.ClientMock{
+						GetRatesFunc: func(ctx context.Context) (vos.DefaultRates, error) {
+							return vos.DefaultRates{
+								vos.BRL: extensions.CurrencyFixtures[0].USDRate, // 1.5
+								vos.EUR: extensions.CurrencyFixtures[1].USDRate, // 2.134
+							}, nil
+						},
+					},
+				}
+			},
+			input: currency.ConvertInput{
+				From:       vos.BRL,
+				To:         vos.EUR,
+				FromAmount: decimal.NewFromFloat(2.25),
+			},
+			want: want{
+				output: currency.ConvertOutput{
+					ConvertedAmount: decimal.NewFromFloat(3.20100),
+				},
+			},
+		},
+		{
+			name: "should return conversion from default to custom currency",
+			fields: func(t *testing.T) currency.UseCase {
+				return currency.UseCase{
+					Repo: &currency.RepositoryMock{
+						GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
+							switch code { //nolint
+							case extensions.CurrencyFixtures[1].Code:
+								return extensions.CurrencyFixtures[1], nil // 2.134
+							default:
+								t.FailNow()
+
+								return entities.Currency{}, nil
+							}
+						},
+					},
+					Client: &currency.ClientMock{
+						GetRatesFunc: func(ctx context.Context) (vos.DefaultRates, error) {
+							return vos.DefaultRates{
+								vos.BRL: extensions.CurrencyFixtures[0].USDRate, // 1.5
+								vos.EUR: extensions.CurrencyFixtures[1].USDRate, // 2.134
+							}, nil
+						},
+					},
+				}
+			},
+			input: currency.ConvertInput{
+				From:       vos.BRL,
+				To:         extensions.CurrencyFixtures[1].Code,
+				FromAmount: decimal.NewFromFloat(2.25),
+			},
+			want: want{
+				output: currency.ConvertOutput{
+					ConvertedAmount: decimal.NewFromFloat(3.20100),
+				},
+			},
+		},
+		{
+			name: "should return conversion from custom to default currency",
+			fields: func(t *testing.T) currency.UseCase {
+				return currency.UseCase{
+					Repo: &currency.RepositoryMock{
+						GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
+							switch code { //nolint
+							case extensions.CurrencyFixtures[0].Code:
+								return extensions.CurrencyFixtures[0], nil // 1.5
+							default:
+								t.FailNow()
+
+								return entities.Currency{}, nil
+							}
+						},
+					},
+					Client: &currency.ClientMock{
+						GetRatesFunc: func(ctx context.Context) (vos.DefaultRates, error) {
+							return vos.DefaultRates{
+								vos.BRL: extensions.CurrencyFixtures[1].USDRate, // 1.5
+								vos.EUR: extensions.CurrencyFixtures[0].USDRate, // 2.134
+							}, nil
+						},
+					},
+				}
+			},
+			input: currency.ConvertInput{
+				From:       extensions.CurrencyFixtures[0].Code,
+				To:         vos.BRL,
+				FromAmount: decimal.NewFromFloat(2.25),
+			},
+			want: want{
+				output: currency.ConvertOutput{
+					ConvertedAmount: decimal.NewFromFloat(3.20100),
 				},
 			},
 		},
 		{
 			name: "should return repository error",
-			fields: func(t *testing.T) currency.Repository {
-				return &currency.RepositoryMock{
-					GetCurrenciesByCodeFunc: func(ctx context.Context, code ...vos.CurrencyCode) (map[vos.CurrencyCode]entities.Currency, error) { //nolint
-						return nil, testErrRepository
+			fields: func(t *testing.T) currency.UseCase {
+				return currency.UseCase{
+					Repo: &currency.RepositoryMock{
+						GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
+							return entities.Currency{}, testErrRepository
+						},
 					},
 				}
 			},
 			input: currency.ConvertInput{
-				From:       "USD",
-				To:         "BRL",
+				From:       "ABC",
+				To:         "DEF",
 				FromAmount: decimal.NewFromFloat(2.25),
 			},
 			want: want{
@@ -78,11 +184,11 @@ func Test_UseCase_Convert(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			uc := currency.NewUseCase(tt.fields(t))
+			uc := tt.fields(t)
 
 			got, err := uc.Convert(testContext, tt.input)
 			assert.ErrorIs(t, err, tt.want.err, got)
-			assert.Equal(t, tt.want.output, got)
+			assert.Equal(t, tt.want.output.ConvertedAmount.String(), got.ConvertedAmount.String())
 		})
 	}
 }
