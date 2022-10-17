@@ -3,6 +3,7 @@ package currency_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
@@ -30,8 +31,8 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 			fields: func(t *testing.T) currency.UseCase {
 				return currency.NewUseCase(
 					&currency.RepositoryMock{
-						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
-							return nil
+						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
+							return cur, nil
 						},
 					},
 					&currency.ClientMock{},
@@ -47,6 +48,40 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 						Code:    "TEST",
 						USDRate: decimal.NewFromFloat(1.23),
 					},
+					IsNew: true,
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "should update currency",
+			fields: func(t *testing.T) currency.UseCase {
+				return currency.NewUseCase(
+					&currency.RepositoryMock{
+						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
+							return entities.Currency{
+								ID:        cur.ID,
+								Code:      cur.Code,
+								CreatedAt: cur.CreatedAt,
+								UpdatedAt: cur.CreatedAt.Add(time.Hour),
+								USDRate:   decimal.NewFromFloat(1.23),
+							}, nil
+						},
+					},
+					&currency.ClientMock{},
+				)
+			},
+			input: currency.CreateCurrencyInput{
+				Code:    "TEST",
+				USDRate: decimal.NewFromFloat(1.23),
+			},
+			want: want{
+				output: currency.CreateCurrencyOutput{
+					Currency: entities.Currency{
+						Code:    "TEST",
+						USDRate: decimal.NewFromFloat(1.23),
+					},
+					IsNew: false,
 				},
 				err: nil,
 			},
@@ -56,8 +91,8 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 			fields: func(t *testing.T) currency.UseCase {
 				return currency.NewUseCase(
 					&currency.RepositoryMock{
-						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
-							return testErrRepository
+						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
+							return entities.Currency{}, testErrRepository
 						},
 					},
 					&currency.ClientMock{},
@@ -78,7 +113,11 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 			uc := tt.fields(t)
 
 			got, err := uc.CreateCurrency(testContext, tt.input)
-			assertCurrency(t, tt.want.output.Currency, got.Currency)
+			// match randomic values
+			tt.want.output.Currency.ID = got.Currency.ID
+			tt.want.output.Currency.CreatedAt = got.Currency.CreatedAt
+			tt.want.output.Currency.UpdatedAt = got.Currency.UpdatedAt
+			assert.Equal(t, tt.output, got)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}

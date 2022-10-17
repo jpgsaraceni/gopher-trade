@@ -9,6 +9,6 @@ import (
 
 //go:generate moq -fmt goimports -out repository_mock.go . Repository
 type Repository interface {
-	CreateCurrency(ctx context.Context, cur entities.Currency) error
+	CreateCurrency(ctx context.Context, cur entities.Currency) (entities.Currency, error)
 	GetCurrencyByCode(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error)
 }

@@ -29,8 +29,9 @@ type CreateCurrencyResponse struct {
 
 var errMissingFields = errors.New("missing required fields")
 
-// @Summary Create a new currency exchange rate
+// @Summary Upsert currency exchange rate to usd
 // @Description Creates an exchange rate from a specified currency to USD.
+// @Description If an exchange rate already exists, updates it.
 // @Tags Currency
 // @Accept json
 // @Produce json
@@ -39,8 +40,8 @@ var errMissingFields = errors.New("missing required fields")
 // @Failure 400 {object} responses.ErrorPayload
 // @Failure 422 {object} responses.ErrorPayload
 // @Failure 500 {object} responses.ErrorPayload
-// @Router /currencies [post]
-func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
+// @Router /currencies [put]
+func (h Handler) UpsertCurrency(w http.ResponseWriter, r *http.Request) {
 	const operation = "Handler.Currencies.CreateCurrency"
 
 	var req CreateCurrencyRequest
@@ -81,8 +82,6 @@ func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
 			responses.InternalServerError(w, err)
 		}
 
-		responses.InternalServerError(w, err)
-
 		return
 	}
 	res := CreateCurrencyResponse{
@@ -93,5 +92,11 @@ func (h Handler) CreateCurrency(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: output.Currency.UpdatedAt,
 	}
 
-	responses.Created(w, res)
+	if output.IsNew {
+		responses.Created(w, res)
+
+		return
+	}
+
+	responses.OK(w, res)
 }

@@ -14,12 +14,14 @@ func (uc UseCase) CreateCurrency(ctx context.Context, input CreateCurrencyInput)
 	}
 
 	cur := entities.NewCurrency(input.Code, input.USDRate)
-	err := uc.Repo.CreateCurrency(ctx, cur)
+	createdCur, err := uc.Repo.CreateCurrency(ctx, cur)
 	if err != nil {
 		return CreateCurrencyOutput{}, extensions.ErrStack(operation, err)
 	}
+	isNew := createdCur.CreatedAt.Equal(createdCur.UpdatedAt)
 
 	return CreateCurrencyOutput{
-		Currency: cur,
+		Currency: createdCur,
+		IsNew:    isNew,
 	}, nil
 }

@@ -21,7 +21,7 @@ var _ Repository = &RepositoryMock{}
 //
 // 		// make and configure a mocked Repository
 // 		mockedRepository := &RepositoryMock{
-// 			CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) error {
+// 			CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
 // 				panic("mock out the CreateCurrency method")
 // 			},
 // 			GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
@@ -35,7 +35,7 @@ var _ Repository = &RepositoryMock{}
 // 	}
 type RepositoryMock struct {
 	// CreateCurrencyFunc mocks the CreateCurrency method.
-	CreateCurrencyFunc func(ctx context.Context, cur entities.Currency) error
+	CreateCurrencyFunc func(ctx context.Context, cur entities.Currency) (entities.Currency, error)
 
 	// GetCurrencyByCodeFunc mocks the GetCurrencyByCode method.
 	GetCurrencyByCodeFunc func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error)
@@ -62,7 +62,7 @@ type RepositoryMock struct {
 }
 
 // CreateCurrency calls CreateCurrencyFunc.
-func (mock *RepositoryMock) CreateCurrency(ctx context.Context, cur entities.Currency) error {
+func (mock *RepositoryMock) CreateCurrency(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
 	if mock.CreateCurrencyFunc == nil {
 		panic("RepositoryMock.CreateCurrencyFunc: method is nil but Repository.CreateCurrency was just called")
 	}
