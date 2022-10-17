@@ -14,3 +14,11 @@ func ListOfCodesToString(codes ...CurrencyCode) []string {
 
 	return output
 }
+
+const (
+	USD CurrencyCode = "USD"
+	BRL CurrencyCode = "BRL"
+	EUR CurrencyCode = "EUR"
+	BTC CurrencyCode = "BTC"
+	ETH CurrencyCode = "ETH"
+)
