@@ -17,7 +17,7 @@ import (
 	"github.com/jpgsaraceni/gopher-trade/app/gateways/api/handlers/currencies"
 )
 
-func Test_Handler_CreateCurrency(t *testing.T) {
+func Test_Handler_UpsertCurrency(t *testing.T) {
 	t.Parallel()
 
 	const target = "/currencies"
@@ -32,7 +32,7 @@ func Test_Handler_CreateCurrency(t *testing.T) {
 		{
 			name: "should create currency receiving decimal rate",
 			uc: &domain.CurrencyMock{
-				CreateCurrencyFunc: func(
+				UpsertCurrencyFunc: func(
 					ctx context.Context,
 					input currency.CreateCurrencyInput,
 				) (currency.CreateCurrencyOutput, error) {
@@ -70,7 +70,7 @@ func Test_Handler_CreateCurrency(t *testing.T) {
 		{
 			name: "should create currency receiving integer rate",
 			uc: &domain.CurrencyMock{
-				CreateCurrencyFunc: func(
+				UpsertCurrencyFunc: func(
 					ctx context.Context,
 					input currency.CreateCurrencyInput,
 				) (currency.CreateCurrencyOutput, error) {
@@ -108,7 +108,7 @@ func Test_Handler_CreateCurrency(t *testing.T) {
 		{
 			name: "should update currency receiving integer rate",
 			uc: &domain.CurrencyMock{
-				CreateCurrencyFunc: func(
+				UpsertCurrencyFunc: func(
 					ctx context.Context,
 					input currency.CreateCurrencyInput,
 				) (currency.CreateCurrencyOutput, error) {
@@ -167,7 +167,7 @@ func Test_Handler_CreateCurrency(t *testing.T) {
 		{
 			name: "should return 422 when rate is a default rate",
 			uc: &domain.CurrencyMock{
-				CreateCurrencyFunc: func(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error) { //nolint
+				UpsertCurrencyFunc: func(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error) { //nolint
 					return currency.CreateCurrencyOutput{}, currency.ErrDefaultRate
 				},
 			},
@@ -183,7 +183,7 @@ func Test_Handler_CreateCurrency(t *testing.T) {
 		{
 			name: "should return 500 when something goes wrong in use case",
 			uc: &domain.CurrencyMock{
-				CreateCurrencyFunc: func(
+				UpsertCurrencyFunc: func(
 					ctx context.Context,
 					input currency.CreateCurrencyInput,
 				) (currency.CreateCurrencyOutput, error) {

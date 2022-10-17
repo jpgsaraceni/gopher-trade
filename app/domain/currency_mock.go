@@ -23,8 +23,8 @@ var _ Currency = &CurrencyMock{}
 // 			ConvertFunc: func(ctx context.Context, input currency.ConvertInput) (currency.ConvertOutput, error) {
 // 				panic("mock out the Convert method")
 // 			},
-// 			CreateCurrencyFunc: func(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error) {
-// 				panic("mock out the CreateCurrency method")
+// 			UpsertCurrencyFunc: func(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error) {
+// 				panic("mock out the UpsertCurrency method")
 // 			},
 // 		}
 //
@@ -36,8 +36,8 @@ type CurrencyMock struct {
 	// ConvertFunc mocks the Convert method.
 	ConvertFunc func(ctx context.Context, input currency.ConvertInput) (currency.ConvertOutput, error)
 
-	// CreateCurrencyFunc mocks the CreateCurrency method.
-	CreateCurrencyFunc func(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error)
+	// UpsertCurrencyFunc mocks the UpsertCurrency method.
+	UpsertCurrencyFunc func(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -48,8 +48,8 @@ type CurrencyMock struct {
 			// Input is the input argument value.
 			Input currency.ConvertInput
 		}
-		// CreateCurrency holds details about calls to the CreateCurrency method.
-		CreateCurrency []struct {
+		// UpsertCurrency holds details about calls to the UpsertCurrency method.
+		UpsertCurrency []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Input is the input argument value.
@@ -57,7 +57,7 @@ type CurrencyMock struct {
 		}
 	}
 	lockConvert        sync.RWMutex
-	lockCreateCurrency sync.RWMutex
+	lockUpsertCurrency sync.RWMutex
 }
 
 // Convert calls ConvertFunc.
@@ -95,10 +95,10 @@ func (mock *CurrencyMock) ConvertCalls() []struct {
 	return calls
 }
 
-// CreateCurrency calls CreateCurrencyFunc.
-func (mock *CurrencyMock) CreateCurrency(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error) {
-	if mock.CreateCurrencyFunc == nil {
-		panic("CurrencyMock.CreateCurrencyFunc: method is nil but Currency.CreateCurrency was just called")
+// UpsertCurrency calls UpsertCurrencyFunc.
+func (mock *CurrencyMock) UpsertCurrency(ctx context.Context, input currency.CreateCurrencyInput) (currency.CreateCurrencyOutput, error) {
+	if mock.UpsertCurrencyFunc == nil {
+		panic("CurrencyMock.UpsertCurrencyFunc: method is nil but Currency.UpsertCurrency was just called")
 	}
 	callInfo := struct {
 		Ctx   context.Context
@@ -107,16 +107,16 @@ func (mock *CurrencyMock) CreateCurrency(ctx context.Context, input currency.Cre
 		Ctx:   ctx,
 		Input: input,
 	}
-	mock.lockCreateCurrency.Lock()
-	mock.calls.CreateCurrency = append(mock.calls.CreateCurrency, callInfo)
-	mock.lockCreateCurrency.Unlock()
-	return mock.CreateCurrencyFunc(ctx, input)
+	mock.lockUpsertCurrency.Lock()
+	mock.calls.UpsertCurrency = append(mock.calls.UpsertCurrency, callInfo)
+	mock.lockUpsertCurrency.Unlock()
+	return mock.UpsertCurrencyFunc(ctx, input)
 }
 
-// CreateCurrencyCalls gets all the calls that were made to CreateCurrency.
+// UpsertCurrencyCalls gets all the calls that were made to UpsertCurrency.
 // Check the length with:
-//     len(mockedCurrency.CreateCurrencyCalls())
-func (mock *CurrencyMock) CreateCurrencyCalls() []struct {
+//     len(mockedCurrency.UpsertCurrencyCalls())
+func (mock *CurrencyMock) UpsertCurrencyCalls() []struct {
 	Ctx   context.Context
 	Input currency.CreateCurrencyInput
 } {
@@ -124,8 +124,8 @@ func (mock *CurrencyMock) CreateCurrencyCalls() []struct {
 		Ctx   context.Context
 		Input currency.CreateCurrencyInput
 	}
-	mock.lockCreateCurrency.RLock()
-	calls = mock.calls.CreateCurrency
-	mock.lockCreateCurrency.RUnlock()
+	mock.lockUpsertCurrency.RLock()
+	calls = mock.calls.UpsertCurrency
+	mock.lockUpsertCurrency.RUnlock()
 	return calls
 }

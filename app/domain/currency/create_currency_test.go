@@ -12,7 +12,7 @@ import (
 	"github.com/jpgsaraceni/gopher-trade/app/domain/entities"
 )
 
-func Test_UseCase_CreateCurrency(t *testing.T) {
+func Test_UseCase_UpsertCurrency(t *testing.T) {
 	t.Parallel()
 
 	type want struct {
@@ -31,7 +31,7 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 			fields: func(t *testing.T) currency.UseCase {
 				return currency.NewUseCase(
 					&currency.RepositoryMock{
-						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
+						UpsertCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
 							return cur, nil
 						},
 					},
@@ -58,7 +58,7 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 			fields: func(t *testing.T) currency.UseCase {
 				return currency.NewUseCase(
 					&currency.RepositoryMock{
-						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
+						UpsertCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
 							return entities.Currency{
 								ID:        cur.ID,
 								Code:      cur.Code,
@@ -91,7 +91,7 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 			fields: func(t *testing.T) currency.UseCase {
 				return currency.NewUseCase(
 					&currency.RepositoryMock{
-						CreateCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
+						UpsertCurrencyFunc: func(ctx context.Context, cur entities.Currency) (entities.Currency, error) {
 							return entities.Currency{}, testErrRepository
 						},
 					},
@@ -112,7 +112,7 @@ func Test_UseCase_CreateCurrency(t *testing.T) {
 			t.Parallel()
 			uc := tt.fields(t)
 
-			got, err := uc.CreateCurrency(testContext, tt.input)
+			got, err := uc.UpsertCurrency(testContext, tt.input)
 			// match randomic values
 			tt.want.output.Currency.ID = got.Currency.ID
 			tt.want.output.Currency.CreatedAt = got.Currency.CreatedAt

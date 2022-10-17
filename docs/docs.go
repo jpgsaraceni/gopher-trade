@@ -26,7 +26,7 @@ const docTemplate = `{
     "paths": {
         "/currencies": {
             "put": {
-                "description": "Creates an exchange rate from a specified currency to USD.",
+                "description": "Creates an exchange rate from a specified currency to USD.\nIf an exchange rate already exists, updates it.",
                 "consumes": [
                     "application/json"
                 ],
@@ -36,7 +36,7 @@ const docTemplate = `{
                 "tags": [
                     "Currency"
                 ],
-                "summary": "Create a new currency exchange rate",
+                "summary": "Upsert currency exchange rate to usd",
                 "parameters": [
                     {
                         "description": "Currency Info",
@@ -57,68 +57,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorPayload"
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorPayload"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorPayload"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorPayload"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "description": "Updates an exchange rate from a previously registered currency to USD.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Currency"
-                ],
-                "summary": "Update currency exchange rate",
-                "parameters": [
-                    {
-                        "description": "Currency Info",
-                        "name": "currency",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/currencies.UpdateCurrencyRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/currencies.UpdateCurrencyResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorPayload"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorPayload"
                         }
@@ -251,42 +189,6 @@ const docTemplate = `{
                 "converted_amount": {
                     "type": "string",
                     "example": "23.431"
-                }
-            }
-        },
-        "currencies.UpdateCurrencyRequest": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string",
-                    "example": "FAKEMONEY"
-                },
-                "usd_rate": {
-                    "type": "string",
-                    "example": "200.132"
-                }
-            }
-        },
-        "currencies.UpdateCurrencyResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string",
-                    "example": "USD"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "2171f348-54b4-4a1e-8643-0972a3daf400"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "usd_rate": {
-                    "type": "string",
-                    "example": "2.132"
                 }
             }
         },

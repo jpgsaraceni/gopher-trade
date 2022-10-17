@@ -42,7 +42,7 @@ var errMissingFields = errors.New("missing required fields")
 // @Failure 500 {object} responses.ErrorPayload
 // @Router /currencies [put]
 func (h Handler) UpsertCurrency(w http.ResponseWriter, r *http.Request) {
-	const operation = "Handler.Currencies.CreateCurrency"
+	const operation = "Handler.Currencies.UpsertCurrency"
 
 	var req CreateCurrencyRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -71,7 +71,7 @@ func (h Handler) UpsertCurrency(w http.ResponseWriter, r *http.Request) {
 		USDRate: rate,
 	}
 
-	output, err := h.uc.CreateCurrency(r.Context(), input)
+	output, err := h.uc.UpsertCurrency(r.Context(), input)
 	if err != nil {
 		err = extensions.ErrStack(operation, err)
 

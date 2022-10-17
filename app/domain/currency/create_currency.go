@@ -7,14 +7,14 @@ import (
 	"github.com/jpgsaraceni/gopher-trade/extensions"
 )
 
-func (uc UseCase) CreateCurrency(ctx context.Context, input CreateCurrencyInput) (CreateCurrencyOutput, error) {
-	const operation = "UseCase.Currency.CreateCurrency"
+func (uc UseCase) UpsertCurrency(ctx context.Context, input CreateCurrencyInput) (CreateCurrencyOutput, error) {
+	const operation = "UseCase.Currency.UpsertCurrency"
 	if entities.IsDefaultRate(input.Code) {
 		return CreateCurrencyOutput{}, extensions.ErrStack(operation, ErrDefaultRate)
 	}
 
 	cur := entities.NewCurrency(input.Code, input.USDRate)
-	createdCur, err := uc.Repo.CreateCurrency(ctx, cur)
+	createdCur, err := uc.Repo.UpsertCurrency(ctx, cur)
 	if err != nil {
 		return CreateCurrencyOutput{}, extensions.ErrStack(operation, err)
 	}
