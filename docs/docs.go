@@ -135,6 +135,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorPayload"
                         }
+                    },
+                    "502": {
+                        "description": "Bad Gateway",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorPayload"
+                        }
                     }
                 }
             }
