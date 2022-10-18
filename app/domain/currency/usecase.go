@@ -45,3 +45,7 @@ type UpdateCurrencyByCodeInput struct {
 }
 
 type UpdateCurrencyByCodeOutput struct{ entities.Currency }
+
+type DeleteCurrencyByCodeInput struct {
+	Code vos.CurrencyCode
+}

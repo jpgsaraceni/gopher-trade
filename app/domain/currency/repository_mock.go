@@ -21,6 +21,9 @@ var _ Repository = &RepositoryMock{}
 //
 // 		// make and configure a mocked Repository
 // 		mockedRepository := &RepositoryMock{
+// 			DeleteCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) error {
+// 				panic("mock out the DeleteCurrencyByCode method")
+// 			},
 // 			GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
 // 				panic("mock out the GetCurrencyByCode method")
 // 			},
@@ -34,6 +37,9 @@ var _ Repository = &RepositoryMock{}
 //
 // 	}
 type RepositoryMock struct {
+	// DeleteCurrencyByCodeFunc mocks the DeleteCurrencyByCode method.
+	DeleteCurrencyByCodeFunc func(ctx context.Context, code vos.CurrencyCode) error
+
 	// GetCurrencyByCodeFunc mocks the GetCurrencyByCode method.
 	GetCurrencyByCodeFunc func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error)
 
@@ -42,6 +48,13 @@ type RepositoryMock struct {
 
 	// calls tracks calls to the methods.
 	calls struct {
+		// DeleteCurrencyByCode holds details about calls to the DeleteCurrencyByCode method.
+		DeleteCurrencyByCode []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Code is the code argument value.
+			Code vos.CurrencyCode
+		}
 		// GetCurrencyByCode holds details about calls to the GetCurrencyByCode method.
 		GetCurrencyByCode []struct {
 			// Ctx is the ctx argument value.
@@ -57,8 +70,44 @@ type RepositoryMock struct {
 			Cur entities.Currency
 		}
 	}
-	lockGetCurrencyByCode sync.RWMutex
-	lockUpsertCurrency    sync.RWMutex
+	lockDeleteCurrencyByCode sync.RWMutex
+	lockGetCurrencyByCode    sync.RWMutex
+	lockUpsertCurrency       sync.RWMutex
+}
+
+// DeleteCurrencyByCode calls DeleteCurrencyByCodeFunc.
+func (mock *RepositoryMock) DeleteCurrencyByCode(ctx context.Context, code vos.CurrencyCode) error {
+	if mock.DeleteCurrencyByCodeFunc == nil {
+		panic("RepositoryMock.DeleteCurrencyByCodeFunc: method is nil but Repository.DeleteCurrencyByCode was just called")
+	}
+	callInfo := struct {
+		Ctx  context.Context
+		Code vos.CurrencyCode
+	}{
+		Ctx:  ctx,
+		Code: code,
+	}
+	mock.lockDeleteCurrencyByCode.Lock()
+	mock.calls.DeleteCurrencyByCode = append(mock.calls.DeleteCurrencyByCode, callInfo)
+	mock.lockDeleteCurrencyByCode.Unlock()
+	return mock.DeleteCurrencyByCodeFunc(ctx, code)
+}
+
+// DeleteCurrencyByCodeCalls gets all the calls that were made to DeleteCurrencyByCode.
+// Check the length with:
+//     len(mockedRepository.DeleteCurrencyByCodeCalls())
+func (mock *RepositoryMock) DeleteCurrencyByCodeCalls() []struct {
+	Ctx  context.Context
+	Code vos.CurrencyCode
+} {
+	var calls []struct {
+		Ctx  context.Context
+		Code vos.CurrencyCode
+	}
+	mock.lockDeleteCurrencyByCode.RLock()
+	calls = mock.calls.DeleteCurrencyByCode
+	mock.lockDeleteCurrencyByCode.RUnlock()
+	return calls
 }
 
 // GetCurrencyByCode calls GetCurrencyByCodeFunc.
