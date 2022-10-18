@@ -23,6 +23,7 @@ func NewRouter(currencyUC currency.UseCase) http.Handler {
 	currencyHandler := currencies.NewHandler(currencyUC)
 	r.Put("/currencies", currencyHandler.UpsertCurrency)
 	r.Get("/currencies/conversion", currencyHandler.GetConversion)
+	r.Delete("/currencies/{currency-code}", currencyHandler.DeleteCurrencyByCode)
 
 	r.Get("/swagger", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "swagger/index.html", http.StatusMovedPermanently)
