@@ -77,7 +77,7 @@ func (h Handler) UpsertCurrency(w http.ResponseWriter, r *http.Request) {
 
 		switch {
 		case errors.Is(err, currency.ErrDefaultRate):
-			responses.UnprocessableEntity(w, responses.ErrCreateDefaultRate, err)
+			responses.UnprocessableEntity(w, responses.ErrIsDefaultRate, err)
 		default:
 			responses.InternalServerError(w, err)
 		}

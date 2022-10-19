@@ -45,6 +45,10 @@ func OK(w http.ResponseWriter, payload any) {
 	successResponse(w, payload, http.StatusOK).sendJSON()
 }
 
+func NoContent(w http.ResponseWriter) {
+	successResponse(w, nil, http.StatusNoContent).sendJSON()
+}
+
 func successResponse(w http.ResponseWriter, payload any, status int) Response {
 	return Response{
 		Writer:  w,

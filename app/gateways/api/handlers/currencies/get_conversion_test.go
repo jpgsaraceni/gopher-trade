@@ -18,7 +18,7 @@ import (
 func Test_Handler_GetConversion(t *testing.T) {
 	t.Parallel()
 
-	const target = "/currencys/conversion"
+	const target = "/currencies/conversion"
 
 	tests := []struct {
 		name       string
