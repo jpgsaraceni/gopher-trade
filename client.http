@@ -8,7 +8,7 @@ Content-Type: application/json
     "usd_rate":"1.2"
 }
 ### Get currency exchange conversion successfully
-GET http://localhost:3000/currencies/conversion?from=USD&to=BRL&amount=1
+GET http://localhost:3000/currencies/conversion?from=USD&to=BTC&amount=1
 
 ###
 DELETE http://localhost:3000/currencies/brlt

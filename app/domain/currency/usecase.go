@@ -10,12 +10,14 @@ import (
 type UseCase struct {
 	Repo   Repository
 	Client Client
+	Cache  Cache
 }
 
-func NewUseCase(r Repository, c Client) UseCase {
+func NewUseCase(r Repository, c Client, cache Cache) UseCase {
 	return UseCase{
 		Repo:   r,
 		Client: c,
+		Cache:  cache,
 	}
 }
 

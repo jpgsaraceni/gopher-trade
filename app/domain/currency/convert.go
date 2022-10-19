@@ -14,28 +14,42 @@ import (
 func (uc UseCase) Convert(ctx context.Context, input ConvertInput) (ConvertOutput, error) {
 	const operation = "UseCase.Currency.Convert"
 
-	g := new(errgroup.Group)
 	var (
 		fromRate decimal.Decimal
 		toRate   decimal.Decimal
 	)
 
+	fromRate, err := uc.getRateFromCache(ctx, input.From)
+	if err != nil {
+		return ConvertOutput{}, extensions.ErrStack(operation, err)
+	}
+	toRate, err = uc.getRateFromCache(ctx, input.To)
+	if err != nil {
+		return ConvertOutput{}, extensions.ErrStack(operation, err)
+	}
+
+	g := new(errgroup.Group)
+
 	g.Go(func() error {
-		rate, err := uc.getRate(ctx, input.From)
-		if err != nil {
-			return err
+		if fromRate == decimal.Zero {
+			rate, err := uc.getRate(ctx, input.From)
+			if err != nil {
+				return err
+			}
+			fromRate = rate
 		}
-		fromRate = rate
 
 		return nil
 	})
 
 	g.Go(func() error {
-		rate, err := uc.getRate(ctx, input.To)
-		if err != nil {
-			return err
+		if toRate == decimal.Zero {
+			rate, err := uc.getRate(ctx, input.To)
+			if err != nil {
+				return err
+			}
+			toRate = rate
 		}
-		toRate = rate
 
 		return nil
 	})
@@ -49,6 +63,17 @@ func (uc UseCase) Convert(ctx context.Context, input ConvertInput) (ConvertOutpu
 	}, nil
 }
 
+func (uc UseCase) getRateFromCache(ctx context.Context, code vos.CurrencyCode) (decimal.Decimal, error) {
+	const operation = "UseCase.Currency.getRateFromCache"
+
+	rate, err := uc.Cache.GetRate(ctx, code)
+	if err != nil {
+		return decimal.Zero, extensions.ErrStack(operation, err)
+	}
+
+	return rate, nil
+}
+
 func (uc UseCase) getRate(ctx context.Context, code vos.CurrencyCode) (decimal.Decimal, error) {
 	const operation = "UseCase.Currency.getRate"
 
@@ -60,6 +85,10 @@ func (uc UseCase) getRate(ctx context.Context, code vos.CurrencyCode) (decimal.D
 		if err != nil {
 			return decimal.Decimal{}, extensions.ErrStack(operation, err)
 		}
+		err = uc.setRateToCache(ctx, code, currencies[code])
+		if err != nil {
+			return decimal.Zero, extensions.ErrStack(operation, err)
+		}
 
 		return currencies[code], nil
 	default:
@@ -67,7 +96,22 @@ func (uc UseCase) getRate(ctx context.Context, code vos.CurrencyCode) (decimal.D
 		if err != nil {
 			return decimal.Decimal{}, extensions.ErrStack(operation, err)
 		}
+		err = uc.setRateToCache(ctx, code, cur.USDRate)
+		if err != nil {
+			return decimal.Zero, extensions.ErrStack(operation, err)
+		}
 
 		return cur.USDRate, nil
 	}
+}
+
+func (uc UseCase) setRateToCache(ctx context.Context, code vos.CurrencyCode, rate decimal.Decimal) error {
+	const operation = "UseCase.Currency.setRateToCache"
+
+	err := uc.Cache.SetRate(ctx, map[vos.CurrencyCode]decimal.Decimal{code: rate})
+	if err != nil {
+		return extensions.ErrStack(operation, err)
+	}
+
+	return nil
 }

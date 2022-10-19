@@ -55,7 +55,7 @@ make load-test
 
 in your terminal. The tool is preconfigured to make 1000 requests in 1 second to each available endpoint. To adjust values, check out the [ddosify docs](https://github.com/ddosify/ddosify).
 
-**In the current version, load tests result around 80% success rates in the conversion endpoint (`[GET] /currencies/conversion?from={{code}}&to={{code}}&amount={{value}}`), and 100% success in other endpoints. The reason for failures in the conversion endpoints are external API timeouts and free request limits. To solve this issue, a cache will be implemented.
+Locally tests are resulting 100% success rate.
 
 ## Running locally
 

@@ -26,5 +26,16 @@ services:
     ports:
       - "3000:3000"
 
+  gopher_cache:
+    image: "redis:7-alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli","ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 volumes:
   postgres:
