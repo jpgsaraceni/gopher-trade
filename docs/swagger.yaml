@@ -84,6 +84,38 @@ paths:
       summary: Upsert currency exchange rate to usd
       tags:
       - Currency
+  /currencies/{currency-code}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Currency code
+        in: path
+        name: currency-code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/currencies.GetConversionResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorPayload'
+      summary: Get a conversion for an existent rate
+      tags:
+      - Exchange
   /currencies/conversion:
     get:
       consumes:

@@ -20,6 +20,7 @@ import (
 // @Param currency-code path string true "Currency code"
 // @Success 204 {object} GetConversionResponse
 // @Failure 404 {object} responses.ErrorPayload
+// @Failure 422 {object} responses.ErrorPayload
 // @Failure 500 {object} responses.ErrorPayload
 // @Router /currencies/{currency-code} [delete]
 func (h Handler) DeleteCurrencyByCode(w http.ResponseWriter, r *http.Request) {
