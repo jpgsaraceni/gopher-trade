@@ -25,14 +25,15 @@ Project (development) and product (API) features:
 * Lint (golangci-lint) - Enforces style and best practices;
 * Makefile - Simplifies running tests, dependencies and application.
 * Docker Compose - Runs API and dependencies with no configuration and on any OS/arch
+* Load testing - Includes [ddosify load testing tool](https://github.com/ddosify/ddosify) configuration.
 
 ### API
 
-Gopher Trade (currently) allows users to register custom currency rates based on USD, get conversions of custom or default (USD, BRL, EUR, ETH, BTC) currencies. In the default currencies case, external APIs are used. A future improvement to this project would be to set back offs for when an API is not available.
+Gopher Trade allows users to register custom currency rates based on USD, get conversions from and to custom or default (USD, BRL, EUR, ETH, BTC) currencies. In the default currencies case, external APIs ([Exchange Rate](https://exchangerate.host/) and [Crypto Compare](https://www.cryptocompare.com/)) are used.
+Two future improvements to this project are:
 
-TODO:
-
-* Update or delete a custom convertion rate
+1. Cache responses from external APIs;
+2. Configure fallbacks for when an API is unavailable.
 
 On the `client.http` file in the root of this repository you can find examples of how to use the available endpoints. You can also view and try out available endpoints on Swagger UI. After running the app, access <http://localhost:3000/swagger> (if you ran with default config).
 
@@ -45,6 +46,16 @@ To run all automated tests (unit and integration):
 ```bash
 make test
 ```
+
+There is a preconfigured load test tool in the `load_test` directory at the root of this folder. To install and run, just enter
+
+```bash
+make load-test
+```
+
+in your terminal. The tool is preconfigured to make 1000 requests in 1 second to each available endpoint. To adjust values, check out the [ddosify docs](https://github.com/ddosify/ddosify).
+
+**In the current version, load tests result around 80% success rates in the conversion endpoint (`[GET] /currencies/conversion?from={{code}}&to={{code}}&amount={{value}}`), and 100% success in other endpoints. The reason for failures in the conversion endpoints are external API timeouts and free request limits. To solve this issue, a cache will be implemented.
 
 ## Running locally
 
@@ -68,7 +79,7 @@ make logs
 
 ## Application Dependencies
 
-This project imports external packages:
+This project imports external packages (list does not include development tools installed in some makefile commands):
 
 * [Testify](https://github.com/stretchr/testify) - to simplify test assertions;
 * [Decimal](https://github.com/shopspring/decimal) - to handle decimal values. See [number types section](#number-types) below;

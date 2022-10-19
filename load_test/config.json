@@ -1,0 +1,33 @@
+{
+    "request_count": 1000,
+    "load_type": "linear",
+    "duration": 1,
+    "output": "stdout",
+    "steps": [
+        {
+            "id": 1,
+            "url": "http://localhost:3000/currencies/conversion?from=BRL&to=USD&amount=1",
+            "protocol": "http",
+            "method": "GET",
+            "timeout": 1,
+            "sleep": "1000"
+        },
+        {
+            "id": 2,
+            "url": "http://localhost:3000/currencies/brlt",
+            "protocol": "http",
+            "method": "DELETE",
+            "timeout": 1,
+            "sleep": "1000"
+        },
+        {
+            "id": 3,
+            "url": "http://localhost:3000/currencies",
+            "protocol": "http",
+            "method": "PUT",
+            "payload_file": "load_test/put_payload.json",
+            "timeout": 1,
+            "sleep": "1000"
+        }
+    ]
+}

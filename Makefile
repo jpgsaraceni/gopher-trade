@@ -43,3 +43,9 @@ stop:
 .PHONY: logs
 logs:
 	docker-compose logs
+
+.PHONY: load-test
+load-test:
+	@echo "==> downloading load test utility..."
+	go install -v go.ddosify.com/ddosify@latest
+	ddosify --config load_test/config.json
