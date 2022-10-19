@@ -6,6 +6,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/cors v1.2.1
 	github.com/golang-migrate/migrate/v4 v4.15.2
+	github.com/gomodule/redigo v1.8.9
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/ory/dockertest/v3 v3.9.1
