@@ -13,6 +13,8 @@ import (
 	"github.com/jpgsaraceni/gopher-trade/extensions"
 )
 
+// TODO: cover cache
+
 func Test_UseCase_Convert(t *testing.T) {
 	t.Parallel()
 
@@ -45,6 +47,14 @@ func Test_UseCase_Convert(t *testing.T) {
 							}
 						},
 					},
+					Cache: &currency.CacheMock{
+						GetRateFunc: func(ctx context.Context, code vos.CurrencyCode) (decimal.Decimal, error) {
+							return decimal.Zero, nil
+						},
+						SetRateFunc: func(contextMoqParam context.Context, currencyRates map[vos.CurrencyCode]decimal.Decimal) error {
+							return nil
+						},
+					},
 				}
 			},
 			input: currency.ConvertInput{
@@ -68,6 +78,14 @@ func Test_UseCase_Convert(t *testing.T) {
 								vos.BRL: extensions.CurrencyFixtures[0].USDRate, // 1.5
 								vos.EUR: extensions.CurrencyFixtures[1].USDRate, // 2.134
 							}, nil
+						},
+					},
+					Cache: &currency.CacheMock{
+						GetRateFunc: func(ctx context.Context, code vos.CurrencyCode) (decimal.Decimal, error) {
+							return decimal.Zero, nil
+						},
+						SetRateFunc: func(contextMoqParam context.Context, currencyRates map[vos.CurrencyCode]decimal.Decimal) error {
+							return nil
 						},
 					},
 				}
@@ -107,6 +125,14 @@ func Test_UseCase_Convert(t *testing.T) {
 							}, nil
 						},
 					},
+					Cache: &currency.CacheMock{
+						GetRateFunc: func(ctx context.Context, code vos.CurrencyCode) (decimal.Decimal, error) {
+							return decimal.Zero, nil
+						},
+						SetRateFunc: func(contextMoqParam context.Context, currencyRates map[vos.CurrencyCode]decimal.Decimal) error {
+							return nil
+						},
+					},
 				}
 			},
 			input: currency.ConvertInput{
@@ -144,6 +170,14 @@ func Test_UseCase_Convert(t *testing.T) {
 							}, nil
 						},
 					},
+					Cache: &currency.CacheMock{
+						GetRateFunc: func(ctx context.Context, code vos.CurrencyCode) (decimal.Decimal, error) {
+							return decimal.Zero, nil
+						},
+						SetRateFunc: func(contextMoqParam context.Context, currencyRates map[vos.CurrencyCode]decimal.Decimal) error {
+							return nil
+						},
+					},
 				}
 			},
 			input: currency.ConvertInput{
@@ -164,6 +198,14 @@ func Test_UseCase_Convert(t *testing.T) {
 					Repo: &currency.RepositoryMock{
 						GetCurrencyByCodeFunc: func(ctx context.Context, code vos.CurrencyCode) (entities.Currency, error) {
 							return entities.Currency{}, testErrRepository
+						},
+					},
+					Cache: &currency.CacheMock{
+						GetRateFunc: func(ctx context.Context, code vos.CurrencyCode) (decimal.Decimal, error) {
+							return decimal.Zero, nil
+						},
+						SetRateFunc: func(contextMoqParam context.Context, currencyRates map[vos.CurrencyCode]decimal.Decimal) error {
+							return nil
 						},
 					},
 				}
