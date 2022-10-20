@@ -28,6 +28,14 @@
             "payload_file": "load_test/put_payload.json",
             "timeout": 1,
             "sleep": "1000"
+        },
+        {
+            "id": 4,
+            "url": "http://localhost:3000/currencies/conversion?from=ABC&to=USD&amount=1",
+            "protocol": "http",
+            "method": "GET",
+            "timeout": 1,
+            "sleep": "1000"
         }
     ]
 }

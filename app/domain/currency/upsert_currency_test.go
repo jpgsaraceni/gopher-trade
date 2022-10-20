@@ -36,6 +36,7 @@ func Test_UseCase_UpsertCurrency(t *testing.T) {
 						},
 					},
 					&currency.ClientMock{},
+					&currency.CacheMock{},
 				)
 			},
 			input: currency.CreateCurrencyInput{
@@ -69,6 +70,7 @@ func Test_UseCase_UpsertCurrency(t *testing.T) {
 						},
 					},
 					&currency.ClientMock{},
+					&currency.CacheMock{},
 				)
 			},
 			input: currency.CreateCurrencyInput{
@@ -96,6 +98,7 @@ func Test_UseCase_UpsertCurrency(t *testing.T) {
 						},
 					},
 					&currency.ClientMock{},
+					&currency.CacheMock{},
 				)
 			},
 			input: currency.CreateCurrencyInput{},

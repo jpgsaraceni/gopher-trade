@@ -35,6 +35,7 @@ func Test_UseCase_DeleteCurrencyByCode(t *testing.T) {
 						},
 					},
 					&currency.ClientMock{},
+					&currency.CacheMock{},
 				)
 			},
 			input: currency.DeleteCurrencyByCodeInput{
@@ -56,6 +57,7 @@ func Test_UseCase_DeleteCurrencyByCode(t *testing.T) {
 						},
 					},
 					&currency.ClientMock{},
+					&currency.CacheMock{},
 				)
 			},
 			input: currency.DeleteCurrencyByCodeInput{
