@@ -1,6 +1,8 @@
 package entities
 
 import (
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -8,6 +10,8 @@ import (
 
 	"github.com/jpgsaraceni/gopher-trade/app/domain/vos"
 )
+
+const defaultDecimalPlaces = 5
 
 type Currency struct {
 	ID        string
@@ -33,9 +37,17 @@ func NewCurrency(code vos.CurrencyCode, usdRate decimal.Decimal) Currency {
 // Convert converts amount in original currency to dollars then to target currency
 // using their USD rates.
 func Convert(originalRate, targetRate, amount decimal.Decimal) decimal.Decimal {
-	const decimalPlaces = 5 // TODO: move to env
+	var decimalPlaces int
+	dp, err := strconv.Atoi(os.Getenv("DECIMAL_PLACES"))
+	if err == nil {
+		decimalPlaces = dp
+	}
+	if decimalPlaces == 0 {
+		decimalPlaces = defaultDecimalPlaces
+	}
+
 	originalAmountInUSD := amount.Div(originalRate)
-	originalAmountInTarget := originalAmountInUSD.Mul(targetRate).Round(decimalPlaces)
+	originalAmountInTarget := originalAmountInUSD.Mul(targetRate).Round(int32(decimalPlaces))
 
 	return originalAmountInTarget
 }

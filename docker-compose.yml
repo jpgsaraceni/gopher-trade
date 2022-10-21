@@ -23,6 +23,16 @@ services:
       - gopher_db
     build: .
     container_name: gopher_trade
+    environment:
+      - PORT=3000
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=postgres
+      - DATABASE_HOST=gopher_db
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - REDIS_HOST=gopher_cache
+      - REDIS_PORT=6379
+      - DECIMAL_PLACES=5
     ports:
       - "3000:3000"
 

@@ -9,6 +9,7 @@ require (
 	github.com/gomodule/redigo v1.8.9
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v4 v4.17.2
+	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/ory/dockertest/v3 v3.9.1
 	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.8.0

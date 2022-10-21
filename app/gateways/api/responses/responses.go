@@ -72,7 +72,9 @@ func (r Response) sendJSON() {
 	if r.Error != nil {
 		log.Println(r.Error.Error())
 	}
-	if err := json.NewEncoder(r.Writer).Encode(r.Payload); err != nil {
-		log.Printf("failed to encode http response: %s", err)
+	if r.Payload != nil {
+		if err := json.NewEncoder(r.Writer).Encode(r.Payload); err != nil {
+			log.Printf("failed to encode http response: %s", err)
+		}
 	}
 }

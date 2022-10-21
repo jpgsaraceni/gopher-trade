@@ -15,10 +15,7 @@ import (
 	"github.com/ory/dockertest/v3/docker"
 )
 
-const ( // TODO: add to env
-	defaultTimeout   = 30 * time.Second
-	containerTimeout = 60
-)
+var defaultTimeout = 30
 
 func GetTestPool() (*pgxpool.Pool, func()) {
 	var dbPool *pgxpool.Pool
@@ -52,12 +49,12 @@ func GetTestPool() (*pgxpool.Pool, func()) {
 
 	log.Printf("Connecting to database on url: %s\n", databaseURL)
 
-	// Tell docker to hard kill the container in 60 seconds
-	if err = resource.Expire(containerTimeout); err != nil {
+	// Tell docker to hard kill the container after timeout
+	if err = resource.Expire(uint(defaultTimeout * 2)); err != nil { //nolint:gomnd
 		panic(err)
 	}
 
-	dockerPool.MaxWait = defaultTimeout
+	dockerPool.MaxWait = time.Duration(defaultTimeout) * time.Second
 	// connects to db in container, with exponential backoff-retry,
 	// because the application in the container might not be ready to accept connections yet
 	if err = dockerPool.Retry(func() error {

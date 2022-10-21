@@ -6,6 +6,7 @@
     "steps": [
         {
             "id": 1,
+            "name": "get conversion from default rate to base rate",
             "url": "http://localhost:3000/currencies/conversion?from=BRL&to=USD&amount=1",
             "protocol": "http",
             "method": "GET",
@@ -14,14 +15,7 @@
         },
         {
             "id": 2,
-            "url": "http://localhost:3000/currencies/brlt",
-            "protocol": "http",
-            "method": "DELETE",
-            "timeout": 1,
-            "sleep": "1000"
-        },
-        {
-            "id": 3,
+            "name": "create custom rate",
             "url": "http://localhost:3000/currencies",
             "protocol": "http",
             "method": "PUT",
@@ -30,10 +24,20 @@
             "sleep": "1000"
         },
         {
-            "id": 4,
-            "url": "http://localhost:3000/currencies/conversion?from=ABC&to=USD&amount=1",
+            "id": 3,
+            "name": "get conversion from custom rate to default rate",
+            "url": "http://localhost:3000/currencies/conversion?from=CDE&to=BTC&amount=1",
             "protocol": "http",
             "method": "GET",
+            "timeout": 1,
+            "sleep": "1000"
+        },
+        {
+            "id": 4,
+            "name": "delete custom rate",
+            "url": "http://localhost:3000/currencies/cde",
+            "protocol": "http",
+            "method": "DELETE",
             "timeout": 1,
             "sleep": "1000"
         }

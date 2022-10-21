@@ -81,7 +81,7 @@ func (uc UseCase) getRate(ctx context.Context, code vos.CurrencyCode) (decimal.D
 	case vos.USD:
 		return decimal.NewFromInt(1), nil
 	case vos.BRL, vos.BTC, vos.ETH, vos.EUR:
-		currencies, err := uc.Client.GetRates(ctx) // TODO: cache
+		currencies, err := uc.Client.GetRates(ctx)
 		if err != nil {
 			return decimal.Decimal{}, extensions.ErrStack(operation, err)
 		}
@@ -92,7 +92,7 @@ func (uc UseCase) getRate(ctx context.Context, code vos.CurrencyCode) (decimal.D
 
 		return currencies[code], nil
 	default:
-		cur, err := uc.Repo.GetCurrencyByCode(ctx, code) // TODO: cache
+		cur, err := uc.Repo.GetCurrencyByCode(ctx, code)
 		if err != nil {
 			return decimal.Decimal{}, extensions.ErrStack(operation, err)
 		}
