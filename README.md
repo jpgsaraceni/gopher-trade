@@ -1,12 +1,14 @@
-# Gopher Trade (WIP)
+# Gopher Trade
 
-Gopher Trade is a currency conversion API built in Go. References are scattered as links through this README. Hopefully when I'm finished I will create a References section at the end of this document.
+Gopher Trade is a currency conversion API built in Go. It works by getting live default currencies (BTC, ETH, EUR and BRL) rates on startup and setting it to cache (with a hard coded TTL of 5 minutes). Custom currencies can be created and persisted in the server database. After cache expires, the first request for a conversion involving a default rate will get its value from an external API and set it to cache.
+References are scattered as links through this README.
 
 ## Contents
 
 * [Features](#features)
   * [Development](#development)
   * [API](#api)
+  * [Future improvements](#future-improvements)
 * [Testing](#testing)
 * [Running locally](#running-locally)
 * [Application Dependencies](#application-dependencies)
@@ -30,12 +32,23 @@ Project (development) and product (API) features:
 ### API
 
 Gopher Trade allows users to register custom currency rates based on USD, get conversions from and to custom or default (USD, BRL, EUR, ETH, BTC) currencies. In the default currencies case, external APIs ([Exchange Rate](https://exchangerate.host/) and [Crypto Compare](https://www.cryptocompare.com/)) are used.
-Two future improvements to this project are:
-
-1. Cache responses from external APIs;
-2. Configure fallbacks for when an API is unavailable.
 
 On the `client.http` file in the root of this repository you can find examples of how to use the available endpoints. You can also view and try out available endpoints on Swagger UI. After running the app, access <http://localhost:3000/swagger> (if you ran with default config).
+
+### Future improvements
+
+This project was developed with a 10 day deadline, so some features/implementations had to be left out:
+
+* Set env var for cache timeout;
+* Create .env file to run project locally (for development);
+* Structured logging;
+* Unit tests for clients;
+* End to end tests;
+* Refactor error payloads;
+* Endpoint to list all available currencies;
+* Fallback for when an external API is unavailable;
+* Assess the use of Strategy pattern for conversion use case (to decide to get conversion from repository or client);
+* Implement authentication and authorization (only allow currency creator to edit its value).
 
 ## Testing
 
@@ -47,7 +60,7 @@ To run all automated tests (unit and integration):
 make test
 ```
 
-There is a preconfigured load test tool in the `load_test` directory at the root of this folder. To install and run, just enter
+There is a preconfigured load test tool in the `load_test` directory at the root of this folder. To install and run, (with the api running - see [running locally](#running-locally) section below) just enter
 
 ```bash
 make load-test
