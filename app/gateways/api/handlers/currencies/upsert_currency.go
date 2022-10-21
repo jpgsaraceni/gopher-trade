@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -51,6 +52,7 @@ func (h Handler) UpsertCurrency(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+	req.Code = strings.ToUpper(req.Code)
 	switch "" {
 	case req.Code, req.USDRate:
 		err := extensions.ErrStack(operation, errMissingFields)
