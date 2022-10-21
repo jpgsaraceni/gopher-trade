@@ -69,7 +69,7 @@ func assertResponse(t *testing.T, wantStatus int, wantBody json.RawMessage, res 
 	assert.Equal(t, wantStatus, res.Code)
 	gotBody, err := io.ReadAll(res.Body)
 	if wantBody == nil {
-		assert.JSONEq(t, string(gotBody), "null")
+		assert.Empty(t, gotBody)
 
 		return
 	}
