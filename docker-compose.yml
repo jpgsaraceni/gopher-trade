@@ -32,6 +32,7 @@ services:
       - DATABASE_PASSWORD=postgres
       - REDIS_HOST=gopher_cache
       - REDIS_PORT=6379
+      - DECIMAL_PLACES=5
     ports:
       - "3000:3000"
 
