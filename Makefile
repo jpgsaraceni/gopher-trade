@@ -42,7 +42,15 @@ stop:
 
 .PHONY: logs
 logs:
+	docker-compose logs app
+
+.PHONY: all-logs
+all-logs:
 	docker-compose logs
+
+.PHONY: live-logs
+live-logs:
+	docker-compose logs -f app
 
 .PHONY: load-test
 load-test:
